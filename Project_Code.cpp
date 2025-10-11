@@ -136,17 +136,24 @@ void readLineSensors(int &leftState1, int &middleState1, int &rightState1, int &
 void setup() {
   Serial.begin(115200);
 
+  // Motor Pins
   pinMode(motor1_dir, OUTPUT);
   pinMode(motor2_dir, OUTPUT);
   pinMode(motor3_dir, OUTPUT);
   pinMode(motor4_dir, OUTPUT);
 
+  // Ultrasonic Sensor Pins
   pinMode(TRIG_PIN, OUTPUT);
   pinMode(ECHO_PIN, INPUT);
 
-  pinMode(LFS_L, INPUT);
-  pinMode(LFS_M, INPUT);
-  pinMode(LFS_R, INPUT);
+  // Line Follower Sensor Pins
+  pinMode(LFS_L1, INPUT);
+  pinMode(LFS_M1, INPUT);
+  pinMode(LFS_R1, INPUT);
+
+  pinMode(LFS_L2, INPUT);
+  pinMode(LFS_M2, INPUT);
+  pinMode(LFS_R2, INPUT);
 
   Serial.println("Robot Initialized with Analog Line Detectors");
 }
@@ -155,19 +162,17 @@ void setup() {
 void loop() {
   ultrasonic(); // Check obstacle
 
-  int leftState, middleState, rightState;
-  readLineSensors(leftState, middleState, rightState);
+  int leftState1, middleState1, rightState1, leftState2, middleState2, rightState2;
+  readLineSensors(leftState1, middleState1, rightState1, leftState2, middleState2, rightState2);
 
   // Simple line-following logic
-  if(leftState == HIGH) {  // Black detected on left sensor
-    stopAll();
-    pivotTurn(LEFT, 180);
-    Serial.println("Turned Left due to line");
-  } 
-  else if(rightState == HIGH) { // Black detected on right sensor
+  if(leftState1 == HIGH) {  // Black detected on left sensor, turn away to the right
     stopAll();
     pivotTurn(RIGHT, 180);
-    Serial.println("Turned Right due to line");
+  } 
+  else if(rightState1 == HIGH) { // Black detected on right sensor, turn away to the left
+    stopAll();
+    pivotTurn(LEFT, 180);
   } 
   else {
     moveStraight(180);
