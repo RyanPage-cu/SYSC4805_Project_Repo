@@ -18,10 +18,14 @@ const int TRIG_PIN = 6;   // Trigger pin
 const int ECHO_PIN = A6;  // Echo pin
 float distanceCm;
 
-// Line Follower Sensor Pins (analog)
+// Line Follower Sensor #1 Pins (analog)
 const int LFS_R = A0;   // Left sensor
 const int LFS_M = A1;   // Middle sensor
 const int LFS_L = A2;   // Right sensor
+// Line Follower Sensor #1 Pins (analog)
+const int LFS_R = A3;   // Left sensor
+const int LFS_M = A4;   // Middle sensor
+const int LFS_L = A5;   // Right sensor
 
 // Threshold for analog line sensors
 const int LINE_THRESHOLD = 900;
