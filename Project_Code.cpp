@@ -19,13 +19,13 @@ const int ECHO_PIN = A6;  // Echo pin
 float distanceCm;
 
 // Line Follower Sensor #1 Pins (analog)
-const int LFS_R = A0;   // Left sensor
-const int LFS_M = A1;   // Middle sensor
-const int LFS_L = A2;   // Right sensor
-// Line Follower Sensor #1 Pins (analog)
-const int LFS_R = A3;   // Left sensor
-const int LFS_M = A4;   // Middle sensor
-const int LFS_L = A5;   // Right sensor
+const int LFS_R1 = A0;   // Left sensor
+const int LFS_M1 = A1;   // Middle sensor
+const int LFS_L1 = A2;   // Right sensor
+// Line Follower Sensor #2 Pins (analog)
+const int LFS_R2 = A3;   // Left sensor
+const int LFS_M2 = A4;   // Middle sensor
+const int LFS_L2 = A5;   // Right sensor
 
 // Threshold for analog line sensors
 const int LINE_THRESHOLD = 900;
@@ -76,30 +76,60 @@ void ultrasonic() {
 
   duration = pulseIn(ECHO_PIN, HIGH);
   distanceCm = (duration * 0.034) / 2;
+
+  //Uncomment below for Debugging
+  /*
+  Serial.print("Distance: ");
+  Serial.print(distanceCm);
+  Serial.println(" cm");
+  */
 }
 
 // === New Analog Line Detector Function ===
-void readLineSensors(int &leftState, int &middleState, int &rightState) {
-  int leftVal = analogRead(LFS_L);
-  int middleVal = analogRead(LFS_M);
-  int rightVal = analogRead(LFS_R);
+void readLineSensors(int &leftState1, int &middleState1, int &rightState1, int &leftState2, int &middleState2, int &rightState2) {
+  int leftVal1 = analogRead(LFS_L1);
+  int middleVal1 = analogRead(LFS_M1);
+  int rightVal1 = analogRead(LFS_R1);
+
+  int leftVal2 = analogRead(LFS_L2);
+  int middleVal2 = analogRead(LFS_M2);
+  int rightVal2 = analogRead(LFS_R2);
 
   // Convert to HIGH if black detected, LOW if white
-  leftState = (leftVal > LINE_THRESHOLD) ? HIGH : LOW;
-  middleState = (middleVal > LINE_THRESHOLD) ? HIGH : LOW;
-  rightState = (rightVal > LINE_THRESHOLD) ? HIGH : LOW;
+  leftState1 = (leftVal1 > LINE_THRESHOLD) ? HIGH : LOW;
+  middleState1 = (middleVal1 > LINE_THRESHOLD) ? HIGH : LOW;
+  rightState1 = (rightVal1 > LINE_THRESHOLD) ? HIGH : LOW;
 
-  char leftColor = (leftState == HIGH) ? 'B' : 'W';
-  char middleColor = (middleState == HIGH) ? 'B' : 'W';
-  char rightColor = (rightState == HIGH) ? 'B' : 'W';
+  leftState2 = (leftVal2 > LINE_THRESHOLD) ? HIGH : LOW;
+  middleState2 = (middleVal2 > LINE_THRESHOLD) ? HIGH : LOW;
+  rightState2 = (rightVal2 > LINE_THRESHOLD) ? HIGH : LOW;
 
-  Serial.print("Line Sensors >> Left: "); Serial.print(leftColor);
-  Serial.print(" - Middle: "); Serial.print(middleColor);
-  Serial.print(" - Right: "); Serial.println(rightColor);
+  char leftColor1 = (leftState1 == HIGH) ? 'B' : 'W';
+  char middleColor1 = (middleState1 == HIGH) ? 'B' : 'W';
+  char rightColor1 = (rightState1 == HIGH) ? 'B' : 'W';
 
-  Serial.print("Raw Analog >> L: "); Serial.print(leftVal);
-  Serial.print(" M: "); Serial.print(middleVal);
-  Serial.print(" R: "); Serial.println(rightVal);
+  char leftColor2 = (leftState2 == HIGH) ? 'B' : 'W';
+  char middleColor2 = (middleState2 == HIGH) ? 'B' : 'W';
+  char rightColor2 = (rightState2 == HIGH) ? 'B' : 'W';
+
+  //Umcomment below for Debugging
+  /*
+  Serial.print("Line Sensors >> Left: "); Serial.print(leftColor1);
+  Serial.print(" - Middle: "); Serial.print(middleColor1);
+  Serial.print(" - Right: "); Serial.println(rightColor1);
+
+  Serial.print("Raw Analog >> L: "); Serial.print(leftVal1);
+  Serial.print(" M: "); Serial.print(middleVal1);
+  Serial.print(" R: "); Serial.println(rightVal1);
+
+  Serial.print("Line Sensors >> Left: "); Serial.print(leftColor2);
+  Serial.print(" - Middle: "); Serial.print(middleColor2);
+  Serial.print(" - Right: "); Serial.println(rightColor2);
+
+  Serial.print("Raw Analog >> L: "); Serial.print(leftVal2);
+  Serial.print(" M: "); Serial.print(middleVal2);
+  Serial.print(" R: "); Serial.println(rightVal2);
+  */
 }
 
 // === Setup ===
