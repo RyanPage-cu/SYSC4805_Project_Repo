@@ -1,3 +1,5 @@
+//currently implemented is some motor contols, ultrasonic sensor and line follower sensors
+
 // === Motor Pin Definitions ===
 const int motor1_dir = 2;
 const int motor1_pwm = 8;
