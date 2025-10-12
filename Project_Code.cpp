@@ -1,27 +1,27 @@
 //currently implemented is some motor contols, ultrasonic sensor and line follower sensors
 
 // === Motor Pin Definitions ===
-const int motor1_dir = 2;
-const int motor1_pwm = 8;
-const int motor2_dir = 3;
-const int motor2_pwm = 9;
-const int motor3_dir = 4;
-const int motor3_pwm = 10;
-const int motor4_dir = 5;
-const int motor4_pwm = 11;
+const int motor1_dir = 53;
+const int motor1_pwm = 52;
+const int motor2_dir = 51;
+const int motor2_pwm = 50;
+const int motor3_dir = 49;
+const int motor3_pwm = 48;
+const int motor4_dir = 47;
+const int motor4_pwm = 46;
 
 const bool RIGHT = true;
 const bool LEFT = false;
 
 // Ultrasonic Sensor Pins
-const int TRIG_PIN = 6;   // Trigger pin
+const int TRIG_PIN = 43;   // Trigger pin
 const int ECHO_PIN = A6;  // Echo pin
 float distanceCm;
 
 // Line Follower Sensor #1 Pins (analog)
-const int LFS_R1 = A0;   // Left sensor
-const int LFS_M1 = A1;   // Middle sensor
-const int LFS_L1 = A2;   // Right sensor
+const int LFS_R1 = A2;   // Left sensor
+const int LFS_M1 = A0;   // Middle sensor
+const int LFS_L1 = A1;   // Right sensor
 // Line Follower Sensor #2 Pins (analog)
 const int LFS_R2 = A3;   // Left sensor
 const int LFS_M2 = A4;   // Middle sensor
