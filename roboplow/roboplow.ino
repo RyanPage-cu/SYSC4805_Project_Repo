@@ -1,7 +1,12 @@
 #include "include/sensors.hpp"
 #include <watchdog.h>
 
+// This is required for the watchdog to work
+void watchdogSetup(void) {}
+
 void setup() {
+	watchdogEnable(4000);
+
 	Serial.begin(115200);
 
 	// Motor Pins
@@ -23,16 +28,12 @@ void setup() {
 	pinMode(LFS_M2, INPUT);
 	pinMode(LFS_R2, INPUT);
 
-	// Enable watchdog timer with 2000ms timeout
-	watchdogEnable(2000);
-
 	Serial.println("Robot Initialized with Analog Line Detectors");
 }
 
 void loop() {
 	// Reset watchdog timer
 	watchdogReset();
-
 	ultrasonic(); // Check obstacle
 
 	int leftState1, middleState1, rightState1, leftState2, middleState2, rightState2;

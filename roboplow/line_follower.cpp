@@ -30,7 +30,4 @@ void readLineSensors(int &leftState1, int &middleState1, int &rightState1, int &
 	leftState2 = (leftVal2 > LINE_THRESHOLD) ? HIGH : LOW;
 	middleState2 = (middleVal2 > LINE_THRESHOLD) ? HIGH : LOW;
 	rightState2 = (rightVal2 > LINE_THRESHOLD) ? HIGH : LOW;
-
-	// Debugging output can be added here if needed
 }
-// This is the line follower code found in Due_Code.cpp

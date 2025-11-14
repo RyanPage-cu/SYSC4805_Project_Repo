@@ -25,7 +25,7 @@ void setup() {
     pinMode(motor4_pwm, OUTPUT);
     
     Serial.println("Motor Unit Test Start");
-    int speeds[3] = {0, 180, 2};
+    int speeds[3] = {0, 180, 255};
     
     // Test PWM speed control
     for (int i = 0; i < 3; i++) {

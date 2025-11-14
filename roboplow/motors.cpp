@@ -48,4 +48,3 @@ void pivotTurn(bool direction, int speed) {
 	delay(1300);
 	stopAll();
 }
-// This is the motors code found in Due_Code.cpp

@@ -12,9 +12,9 @@ void readLineSensors(int &leftState1, int &middleState1, int &rightState1) {
     leftState1 = (leftVal1 > LINE_THRESHOLD) ? HIGH : LOW;
     middleState1 = (middleVal1 > LINE_THRESHOLD) ? HIGH : LOW;
     rightState1 = (rightVal1 > LINE_THRESHOLD) ? HIGH : LOW;
-    Serial.print("L:"); Serial.print(leftVal1);
-    Serial.print(" M:"); Serial.print(middleVal1);
-    Serial.print(" R:"); Serial.println(rightVal1);
+    //Serial.print("L:"); Serial.print(leftVal1);
+    //Serial.print(" M:"); Serial.print(middleVal1);
+    //Serial.print(" R:"); Serial.println(rightVal1);
     delay(500);
 }
 
@@ -71,5 +71,4 @@ void setup() {
 }
 
 void loop() {
-    // No repeated tests
 }

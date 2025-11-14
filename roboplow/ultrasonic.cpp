@@ -17,7 +17,4 @@ void ultrasonic() {
 
 	duration = pulseIn(ECHO_PIN, HIGH);
 	distanceCm = (duration * 0.034) / 2;
-
-	// Debugging output can be added here if needed
 }
-// This is the ultrasonic sensor code found in Due_Code.cpp
