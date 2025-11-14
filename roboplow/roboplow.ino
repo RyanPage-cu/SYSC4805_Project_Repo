@@ -31,6 +31,16 @@ void setup() {
 	Serial.println("Robot Initialized with Analog Line Detectors");
 }
 
+// Step function: move forward at given speed for given duration (ms)
+void stepForward(int speed, unsigned long duration_ms) {
+    // start moving forward
+    moveStraight(speed);
+    // run for duration
+    delay(duration_ms);
+    // stop when done
+    stopAll();
+}
+
 void loop() {
 	// Reset watchdog timer
 	watchdogReset();
@@ -39,7 +49,7 @@ void loop() {
 	int leftState1, middleState1, rightState1, leftState2, middleState2, rightState2;
 	readLineSensors(leftState1, middleState1, rightState1, leftState2, middleState2, rightState2);
 
-	// Simple line-following logic
+	/* Simple line-following logic
 	if(leftState1 == HIGH) {  // Black detected on left sensor, turn away to the right
 		stopAll();
 		pivotTurn(RIGHT, 180);
@@ -51,6 +61,9 @@ void loop() {
 	else {
 		moveStraight(180);
 	}
-
+	*/
+	stepForward(180, 1000); // Move forward at speed 180 for 1000 ms
 	delay(20); // Adjust loop speed
 }
+
+
