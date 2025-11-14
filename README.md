@@ -1,6 +1,6 @@
-# Roboplow — SYSC 4805 Autonomous Snowplow Project
+# SYSC 4805 Computer Systems Design Lab, Carleton University
 
-# Group L2 — SYSC 4805 Computer Systems Design Lab, Carleton University
+# Group L2 — Roboplow — SYSC 4805 Autonomous Snowplow Project
 
 # Team Members 
 1. Ryan Page (101268082) RyanPage@cmail.carleton.ca
