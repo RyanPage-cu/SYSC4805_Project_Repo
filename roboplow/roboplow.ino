@@ -1,9 +1,4 @@
-
 #include "include/sensors.hpp"
-#include "modules/distance_sensor.cpp"
-#include "modules/line_follower.cpp"
-#include "modules/motors.cpp"
-#include "modules/ultrasonic.cpp"
 
 void setup() {
 	Serial.begin(115200);

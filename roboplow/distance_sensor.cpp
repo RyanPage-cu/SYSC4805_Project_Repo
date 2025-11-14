@@ -5,8 +5,8 @@
 // Two Sharp GP2Y0A51SK0F sensors (2–15 cm range)
 // Each sensor reports independently when its voltage > 0.72 V (~object closer than 8 cm)
 
-const int SENSOR_LEFT  = A1;       // Left sensor VOUT
-const int SENSOR_RIGHT = A2;       // Right sensor VOUT
+const int SENSOR_LEFT  = A8;       // Left sensor VOUT
+const int SENSOR_RIGHT = A9;       // Right sensor VOUT
 const float THRESHOLD_V = 0.72;    // ~8 cm boundary voltage
 
 // Function to read average voltage from analog pin
