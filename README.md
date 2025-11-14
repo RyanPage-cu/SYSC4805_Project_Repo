@@ -31,8 +31,3 @@ Basic setup, build, and test instructions will be added as development progresse
 3. Run unit tests in /tests.  
 4. Deploy firmware to development hardware for integration testing.
 
-# Contributions
-Contributions and issues are welcome. Please open an issue or pull request with proposed changes and testing details.
-
-# License
-Specify your project license here (e.g., MIT, Apache 2.0). Update as needed.
