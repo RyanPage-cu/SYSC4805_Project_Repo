@@ -17,6 +17,7 @@ void readLineSensors(int &leftState1, int &middleState1, int &rightState1, int &
 	int leftVal1 = analogRead(LFS_L1);
 	int middleVal1 = analogRead(LFS_M1);
 	int rightVal1 = analogRead(LFS_R1);
+	Serial.println(leftVal1);
 
 	int leftVal2 = analogRead(LFS_L2);
 	int middleVal2 = analogRead(LFS_M2);
