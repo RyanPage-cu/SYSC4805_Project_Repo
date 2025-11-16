@@ -22,7 +22,7 @@ void pivotTurn(bool direction, int speed = 180); // Implementation in motors.cpp
 extern const int TRIG_PIN;
 extern const int ECHO_PIN;
 extern float distanceCm;
-void ultrasonic(); // Implementation in ultrasonic.cpp
+void ultrasonic_readDistance(); // Implementation in ultrasonic.cpp
 
 // --- Line Follower Sensors (to be moved to line_follower.cpp) ---
 extern const int LFS_R1;
@@ -39,3 +39,4 @@ extern const int SENSOR_LEFT;    // Left Sharp sensor VOUT
 extern const int SENSOR_RIGHT;   // Right Sharp sensor VOUT
 extern const float THRESHOLD_V;  // ~8 cm boundary voltage
 float readVoltage(int pin);      // Implementation in distance_sensor.cpp
+void readSharpDistances(float &distLeft, float &distRight) ; // Implementation in distance_sensor.cpp

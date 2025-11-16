@@ -93,8 +93,6 @@ void loop() {
 	float distanceLeft, distanceRight;
 	readSharpDistances(distanceLeft, distanceRight);
 
-
-     
     if (L1 == HIGH) {
         Serial.println("Line Left → turn RIGHT");
         stopAll();
