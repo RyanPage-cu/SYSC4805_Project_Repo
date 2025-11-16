@@ -7,7 +7,7 @@ const int TRIG_PIN = 43;   // Trigger pin
 const int ECHO_PIN = A6;   // Echo pin
 float distanceCm;
 
-void ultrasonic() {
+void ultrasonic_readDistance() {
 	long duration;
 	digitalWrite(TRIG_PIN, LOW);
 	delayMicroseconds(2);
