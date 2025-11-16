@@ -77,10 +77,11 @@ void loop() {
     float distanceCm = distanceCm;
 
     // Example: Detect obstacle ahead
-    if (dist < 15.0) {
+    if (distanceCm < 10.0) {
         stopAll();
         Serial.println("[WARN] Obstacle detected! <15 cm");
         delay(200);
+		pivotTurn(RIGHT, 180);
         return;
     }
 
@@ -91,6 +92,8 @@ void loop() {
 	/***** Read Distance Sensors *****/
 	float distanceLeft, distanceRight;
 	readSharpDistances(distanceLeft, distanceRight);
+
+
      
     if (L1 == HIGH) {
         Serial.println("Line Left → turn RIGHT");
