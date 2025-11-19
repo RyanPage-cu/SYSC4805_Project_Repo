@@ -115,6 +115,59 @@ void loop() {
     delay(20);
 }
 
+#ifdef TEST_MAIN
+// Simple main for testing functions outside the Arduino loop.
+// Define TEST_MAIN to use this (e.g. add `#define TEST_MAIN` at top or pass -DTEST_MAIN).
+extern "C" int main(void) {
+#if defined(ARDUINO)
+    init(); // initialize Arduino core if available
+#endif
+    setup();
+
+    Serial.println("=== TEST MAIN START ===");
+
+    // Example: test ultrasonic
+    float d = ultrasonic_readDistance();
+    Serial.print("ultrasonic_readDistance() -> ");
+    Serial.println(d);
+
+    // Example: test Sharp IR readings
+    float left, right;
+    readSharpDistances(left, right);
+    Serial.print("readSharpDistances() -> ");
+    Serial.print(left);
+    Serial.print(", ");
+    Serial.println(right);
+
+    // Example: test line sensors
+    int L1, M1, R1, L2, M2, R2;
+    readAllLineSensors(L1, M1, R1, L2, M2, R2);
+    Serial.print("Line sensors -> ");
+    Serial.print(L1); Serial.print(' ');
+    Serial.print(M1); Serial.print(' ');
+    Serial.print(R1); Serial.print(' ');
+    Serial.print(L2); Serial.print(' ');
+    Serial.print(M2); Serial.print(' ');
+    Serial.println(R2);
+
+    // Example: test motors briefly
+    Serial.println("moveStraight(150) for 500ms");
+    moveStraight(150);
+    delay(500);
+    stopAll();
+
+    Serial.println("=== TEST MAIN END ===");
+
+    // Keep running so Serial output remains available
+    while (true) {
+        delay(1000);
+    }
+    return 0;
+}
+#endif
+
+
+
 
 
 
