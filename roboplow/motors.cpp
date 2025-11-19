@@ -45,6 +45,12 @@ void pivotTurn(bool direction, int speed) {
 		setMotor(motor3_dir, motor3_pwm, true, speed);
 		setMotor(motor4_dir, motor4_pwm, true, speed);
 	}
-	delay(1300);
+	delay(1500);
 	stopAll();
+}
+
+void stepForward(int speed, unsigned long duration_ms) {
+    moveStraight(speed);
+    delay(duration_ms);
+    stopAll();
 }

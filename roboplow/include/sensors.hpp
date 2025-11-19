@@ -17,12 +17,13 @@ void setMotor(int dirPin, int pwmPin, bool forward, int speed); // Implementatio
 void moveStraight(int speed = 180); // Implementation in motors.cpp
 void stopAll(); // Implementation in motors.cpp
 void pivotTurn(bool direction, int speed = 180); // Implementation in motors.cpp
+void stepForward(int speed, unsigned long duration_ms); // Implementation in motors.cpp
 
 // --- Ultrasonic Sensor (to be moved to ultrasonic.cpp) ---
 extern const int TRIG_PIN;
 extern const int ECHO_PIN;
 extern float distanceCm;
-void ultrasonic_readDistance(); // Implementation in ultrasonic.cpp
+extern float ultrasonic_readDistance(); // Implementation in ultrasonic.cpp
 
 // --- Line Follower Sensors (to be moved to line_follower.cpp) ---
 extern const int LFS_R1;
