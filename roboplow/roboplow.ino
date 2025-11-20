@@ -34,6 +34,11 @@ void setup() {
     pinMode(LFS_M2, INPUT);
     pinMode(LFS_R2, INPUT);
 
+    // --- Initialize VL53L1X Time-of-Flight sensor ---
+    if (!tof_init()) {
+        Serial.println("ToF init failed!");
+    }
+
     Serial.println("Robot Initialized using Analog Line Detectors.");
 }
 
@@ -58,9 +63,24 @@ void loop() {
     Serial.print("Ultrasonic: ");
     Serial.println(distanceCm);
 
+    float tofCm0 = tof_readDistance();
+    if (tofCm0 < 0.0f) {
+        Serial.println("ToF: ERROR");
+    } else {
+        Serial.print("ToF: ");
+        Serial.print(tofCm0);
+        Serial.println(" cm");
+    }
+
+
     /***** Read Sharp IR Distance Sensors *****/
     float distanceLeft, distanceRight;
     readSharpDistances(distanceLeft, distanceRight);
+    Serial.print("Sharp Left: ");
+    Serial.print(distanceLeft); 
+    Serial.print(" cm, Right: ");
+    Serial.println(distanceRight);    
+
 
 
     /***** Read Line Sensors *****/
@@ -99,10 +119,8 @@ void loop() {
     moveStraight(180);
     */
 
-    pivotTurn(RIGHT,150);
-    delay(1000);
-    pivotTurn(LEFT,150);
-    delay(1000);
+    delay(10000);
+
 }
 
 
