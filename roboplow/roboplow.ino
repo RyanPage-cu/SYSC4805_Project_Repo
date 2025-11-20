@@ -41,6 +41,11 @@ void setup() {
         Serial.println("ToF init failed!");
     }
 
+    // --- Initialize IR Obstacle Detection Sensors ---
+    pinMode(IR_SENSOR_FL, INPUT);
+    pinMode(IR_SENSOR_FR, INPUT);
+    Serial.println("Both IR sensors initialized on pin 40 and 41.");
+
 }
 
 /************************************************************
@@ -79,16 +84,25 @@ void loop() {
     Serial.print(" R:");
     Serial.println(BR);
 
+    /***** Read IR Obstacle Detection Sensors *****/
+    bool obstacleFrontLeft = ir_obstacleDetected(IR_SENSOR_FL);
+    bool obstacleFrontRight = ir_obstacleDetected(IR_SENSOR_FR);
+    Serial.print("IR Front Left Obstacle: ");
+    Serial.println(obstacleFrontLeft ? "Yes" : "No");
+    Serial.print("IR Front Right Obstacle: ");
+    Serial.println(obstacleFrontRight ? "Yes" : "No");
+
+    /*
     if(front_DistanceCm > 0 && front_DistanceCm < 30) {
         Serial.println("Obstacle detected! Stopping.");
         stopAll();
         delay(1000);
         if(right_DistanceCm > left_DistanceCm) {
             Serial.println("Pivoting Right");
-            pivotTurn(RIGHT, 200);
+            pivotTurn(RIGHT, 150);
         } else {
             Serial.println("Pivoting Left");
-            pivotTurn(LEFT, 200);
+            pivotTurn(LEFT, 150);
         }
     }
 
@@ -97,7 +111,7 @@ void loop() {
         delay(1000);
         if(front_DistanceCm < 30){
             Serial.println("Right obstacle detected and Front! Pivoting Left.");
-            pivotTurn(LEFT, 200);
+            pivotTurn(LEFT, 150);
         }else{
             Serial.println("Right obstacle detected and nothing in Front! Move Straight.");
         }
@@ -107,13 +121,40 @@ void loop() {
         delay(1000);
         if(front_DistanceCm < 30){
             Serial.println("Left obstacle detected and Front! Pivoting Right.");
-            pivotTurn(RIGHT, 200);
+            pivotTurn(RIGHT, 150);
         }else{
             Serial.println("Left obstacle detected and nothing in Front! Stay Straight.");
         }
     }
 
+    if(FL == 0 || FM == 0 || FR == 0){
+        Serial.println("Line detected on Front Sensors! Stopping.");
+        stopAll();
+        if(FL == 0 && FR == 1 && FM == 1 || (FL == 0 && FM == 0 && FR == 1)){
+            Serial.println("Left Front Sensor on Line! Pivoting Right.");
+            stepForward(-180, 500);
+            delay(1000);
+            pivotTurn(RIGHT, 150);
+        }else if(FR == 0 && FL == 1 && FM == 1 || (FR == 0 && FM == 0 && FL == 1)){
+            Serial.println("Right Front Sensor on Line! Pivoting Left.");
+            stepForward(-180, 500);
+            pivotTurn(LEFT, 150);
+        }else{
+            Serial.println("Middle Front Sensor on Line! Reversing.");
+            stepForward(-180, 1000);
+            if(right_DistanceCm > left_DistanceCm) {
+                Serial.println("Pivoting Right");
+                pivotTurn(RIGHT, 150);
+            } else {
+                Serial.println("Pivoting Left");
+                pivotTurn(LEFT, 150);
+            }
+     }
+        delay(1000);
+    }
+
     stepForward(180, 1000);
+    */
     delay(1000);
 }
 

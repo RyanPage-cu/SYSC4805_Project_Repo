@@ -48,4 +48,9 @@ void readLineSensors(int &leftState1, int &middleState1, int &rightState1, int &
 bool tof_init();                             // initialize sensor, returns true on success
 float tof_readDistance();                    // read distance in cm, returns -1.0 on timeout/error    
 
+// --- IR Obstacle Detection Sensor ---
+extern const int IR_SENSOR_FR;    // Digital input from VMA330 OUT pin
+extern const int IR_SENSOR_FL;    // Digital input from VMA330 OUT pin
+bool ir_obstacleDetected(int IR_SENSOR_PIN);       // returns true if obstacle detected, prints status
+
 #endif // SENSORS_HPP
