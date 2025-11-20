@@ -22,8 +22,10 @@ void setup() {
     pinMode(motor4_dir, OUTPUT);
 
     /***** Ultrasonic Sensor Pins *****/
-    pinMode(TRIG_PIN, OUTPUT);
-    pinMode(ECHO_PIN, INPUT);
+    pinMode(TRIG_PIN0, OUTPUT);
+    pinMode(ECHO_PIN0, INPUT);
+    pinMode(TRIG_PIN1, OUTPUT);
+    pinMode(ECHO_PIN1, INPUT);
 
     /***** Line Follower Sensor Pins *****/
     pinMode(LFS_L1, INPUT);
@@ -39,7 +41,6 @@ void setup() {
         Serial.println("ToF init failed!");
     }
 
-    Serial.println("Robot Initialized using Analog Line Detectors.");
 }
 
 /************************************************************
@@ -59,9 +60,13 @@ void loop() {
     watchdogReset();
 
     /***** Read Ultrasonic Distance Value *****/
-    float distanceCm = ultrasonic_readDistance();
-    Serial.print("Ultrasonic: ");
-    Serial.println(distanceCm);
+    float distanceCm_Right = ultrasonic_singleRead_Right();
+    Serial.print("Ultrasonic Right: ");
+    Serial.println(distanceCm_Right);
+    delay(1000);
+    float distanceCm_Left = ultrasonic_singleRead_Left();
+    Serial.print("Ultrasonic Left: ");
+    Serial.println(distanceCm_Left);
 
     float tofCm0 = tof_readDistance();
     if (tofCm0 < 0.0f) {
@@ -71,16 +76,6 @@ void loop() {
         Serial.print(tofCm0);
         Serial.println(" cm");
     }
-
-
-    /***** Read Sharp IR Distance Sensors *****/
-    float distanceLeft, distanceRight;
-    readSharpDistances(distanceLeft, distanceRight);
-    Serial.print("Sharp Left: ");
-    Serial.print(distanceLeft); 
-    Serial.print(" cm, Right: ");
-    Serial.println(distanceRight);    
-
 
 
     /***** Read Line Sensors *****/
@@ -119,7 +114,7 @@ void loop() {
     moveStraight(180);
     */
 
-    delay(10000);
+    delay(1000);
 
 }
 
