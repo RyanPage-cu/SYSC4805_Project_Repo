@@ -53,9 +53,6 @@ void readAllLineSensors(
 void loop() {
     watchdogReset();
 
-    // Stop after this first cycle
-    noLoop();
-
     /***** Read Ultrasonic Distance Value *****/
     float distanceCm = ultrasonic_readDistance();
     Serial.print("Ultrasonic: ");
@@ -102,8 +99,10 @@ void loop() {
     moveStraight(180);
     */
 
-    pivotTurn(RIGHT,180);
-    delay(20);
+    pivotTurn(RIGHT,150);
+    delay(1000);
+    pivotTurn(LEFT,150);
+    delay(1000);
 }
 
 

@@ -41,3 +41,9 @@ extern const int SENSOR_RIGHT;   // Right Sharp sensor VOUT
 extern const float THRESHOLD_V;  // ~8 cm boundary voltage
 float readVoltage(int pin);      // Implementation in distance_sensor.cpp
 void readSharpDistances(float &distLeft, float &distRight) ; // Implementation in distance_sensor.cpp
+
+// --- Time of Flight Sensor (VL53L1X) ---
+bool tof_init();                             // initialize sensor, returns true on success
+void tof_startContinuous(uint32_t period_ms = 50); // start continuous readings (ms)
+float tof_readDistance();                    // read distance in cm, returns -1.0 on timeout/error
+bool tof_timeoutOccurred();                  // check for timeout

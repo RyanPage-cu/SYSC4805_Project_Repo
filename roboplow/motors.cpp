@@ -33,20 +33,52 @@ void stopAll() {
 	analogWrite(motor4_pwm, 0);
 }
 
+// Non-blocking pivot API
+static unsigned long pivotEndTime = 0;
+static bool pivotActive = false;
+static bool pivotDirection = RIGHT;
+static int pivotSpeed = 0;
+
+void startPivot(bool direction, int speed, unsigned long duration_ms) {
+    speed = constrain(speed, 0, 255);
+    pivotDirection = direction;
+    pivotSpeed = speed;
+    pivotEndTime = millis() + duration_ms;
+    pivotActive = true;
+
+    if (pivotDirection == RIGHT) {
+        setMotor(motor1_dir, motor1_pwm, false, pivotSpeed);
+        setMotor(motor2_dir, motor2_pwm, false, pivotSpeed);
+        setMotor(motor3_dir, motor3_pwm, false, pivotSpeed);
+        setMotor(motor4_dir, motor4_pwm, false, pivotSpeed);
+    } else {
+        setMotor(motor1_dir, motor1_pwm, true, pivotSpeed);
+        setMotor(motor2_dir, motor2_pwm, true, pivotSpeed);
+        setMotor(motor3_dir, motor3_pwm, true, pivotSpeed);
+        setMotor(motor4_dir, motor4_pwm, true, pivotSpeed);
+    }
+}
+
+void updatePivot() {
+    if (!pivotActive) return;
+    if ((long)(millis() - pivotEndTime) >= 0) { // handles wrap-around
+        stopAll();
+        pivotActive = false;
+    }
+}
+
+void stopPivot() {
+    stopAll();
+    pivotActive = false;
+}
+
+// Blocking wrapper that preserves existing behaviour (default 1500 ms)
 void pivotTurn(bool direction, int speed) {
-	if (direction == RIGHT) {
-		setMotor(motor1_dir, motor1_pwm, false, speed);
-		setMotor(motor2_dir, motor2_pwm, false, speed);
-		setMotor(motor3_dir, motor3_pwm, false, speed);
-		setMotor(motor4_dir, motor4_pwm, false, speed);
-	} else {
-		setMotor(motor1_dir, motor1_pwm, true, speed);
-		setMotor(motor2_dir, motor2_pwm, true, speed);
-		setMotor(motor3_dir, motor3_pwm, true, speed);
-		setMotor(motor4_dir, motor4_pwm, true, speed);
-	}
-	delay(1500);
-	stopAll();
+    startPivot(direction, speed, 1200);
+    while (pivotActive) {
+        updatePivot();
+        delay(5); // tiny sleep to avoid busy loop; keeps responsiveness
+    }
 }
 
 void stepForward(int speed, unsigned long duration_ms) {
