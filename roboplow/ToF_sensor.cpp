@@ -27,9 +27,17 @@ bool tof_init()
 
     tofSensor0.setTimeout(500);
     tofSensor1.setTimeout(500);
+    if (!tofSensor1.init()) {
+        Serial.println("ToF sensor 1 init failed!");
+        return false;
+    }
+    if (!tofSensor0.init()) {
+        Serial.println("ToF sensor 0 init failed!");
+        return false;
+    }
 
-    if (!tofSensor0.init()) return false;
-    if (!tofSensor1.init()) return false;
+
+    Serial.println("ToF sensors initialized successfully.");
 
     tofSensor0.setDistanceMode(VL53L1X::Medium);
     tofSensor1.setDistanceMode(VL53L1X::Medium);

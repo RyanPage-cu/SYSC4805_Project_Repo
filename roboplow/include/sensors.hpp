@@ -42,12 +42,10 @@ extern const int LFS_R2;
 extern const int LFS_M2;
 extern const int LFS_L2;
 extern const int LINE_THRESHOLD;
-void readLineSensors(int &leftState1, int &middleState1, int &rightState1,
-                     int &leftState2, int &middleState2, int &rightState2); // Implementation in line_follower.cpp
+void readLineSensors(int &leftState1, int &middleState1, int &rightState1, int &leftState2, int &middleState2, int &rightState2); // Implementation in line_follower.cpp
 
 // --- Time of Flight Sensor (VL53L1X) ---
 bool tof_init();                             // initialize sensor, returns true on success
-float tof_readDistance();                    // read distance in cm, returns -1.0 on timeout/error
-float tof_readDistance1();    
+float tof_readDistance();                    // read distance in cm, returns -1.0 on timeout/error    
 
 #endif // SENSORS_HPP

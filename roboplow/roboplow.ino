@@ -44,78 +44,77 @@ void setup() {
 }
 
 /************************************************************
- * Get All Line Sensor Values
- ************************************************************/
-void readAllLineSensors(
-    int &L1, int &M1, int &R1,
-    int &L2, int &M2, int &R2
-) {
-    readLineSensors(L1, M1, R1, L2, M2, R2);
-}
-
-/************************************************************
  * Arduino Loop
  ************************************************************/
 void loop() {
     watchdogReset();
 
     /***** Read Ultrasonic Distance Value *****/
-    float distanceCm_Right = ultrasonic_singleRead_Right();
+    float right_DistanceCm = ultrasonic_singleRead_Right();
     Serial.print("Ultrasonic Right: ");
-    Serial.println(distanceCm_Right);
-    delay(1000);
-    float distanceCm_Left = ultrasonic_singleRead_Left();
+    Serial.println(right_DistanceCm);
+    float left_DistanceCm = ultrasonic_singleRead_Left();
     Serial.print("Ultrasonic Left: ");
-    Serial.println(distanceCm_Left);
+    Serial.println(left_DistanceCm);
 
-    float tofCm0 = tof_readDistance();
-    if (tofCm0 < 0.0f) {
-        Serial.println("ToF: ERROR");
-    } else {
-        Serial.print("ToF: ");
-        Serial.print(tofCm0);
+    /***** Read ToF Distance Value *****/
+    float front_DistanceCm = tof_readDistance();
+    Serial.print("ToF: ");
+        Serial.print(front_DistanceCm);
         Serial.println(" cm");
-    }
-
 
     /***** Read Line Sensors *****/
+    int FL, FM, FR, BL, BM, BR;
+    readLineSensors(FL, FM, FR, BL, BM, BR);
+    Serial.print("Front Line Sensors 1 - L:");
+    Serial.print(FL);   
+    Serial.print(" M:");
+    Serial.print(FM);
+    Serial.print(" R:");
+    Serial.println(FR);
+    Serial.print("Back Line Sensors 2 - L:");
+    Serial.print(BL);
+    Serial.print(" M:");
+    Serial.print(BM);
+    Serial.print(" R:");
+    Serial.println(BR);
 
-    /*
-    int L1, M1, R1, L2, M2, R2;
-    readAllLineSensors(L1, M1, R1, L2, M2, R2);
-
-    bool lineDetected = (L1 == HIGH || M1 == HIGH || R1 == HIGH ||
-                         L2 == HIGH || M2 == HIGH || R2 == HIGH);
-
-    bool ultrasonicBlocked = (distanceCm > 0 && distanceCm < 30);
-    bool IRblocked = (distanceLeft < 10 || distanceRight < 10); // adjust if needed
-
-    if (ultrasonicBlocked) {
-        Serial.println("[STOP] Ultrasonic detected obstacle!");
+    if(front_DistanceCm > 0 && front_DistanceCm < 30) {
+        Serial.println("Obstacle detected! Stopping.");
         stopAll();
-        pivotTurn(RIGHT,180);
-        return;
-    }
-    
-    if (IRblocked) {
-        Serial.println("[STOP] Sharp distance sensor triggered!");
-        stopAll();
-        return;
-    }
-    
-
-    if (lineDetected) {
-        Serial.println("[STOP] Line detected!");
-        stopAll();
-        return;
+        delay(1000);
+        if(right_DistanceCm > left_DistanceCm) {
+            Serial.println("Pivoting Right");
+            pivotTurn(RIGHT, 200);
+        } else {
+            Serial.println("Pivoting Left");
+            pivotTurn(LEFT, 200);
+        }
     }
 
-    Serial.println("[CLEAR] Moving forward...");
-    moveStraight(180);
-    */
+    if(right_DistanceCm > 0 && right_DistanceCm < 20) {
+        stopAll();
+        delay(1000);
+        if(front_DistanceCm < 30){
+            Serial.println("Right obstacle detected and Front! Pivoting Left.");
+            pivotTurn(LEFT, 200);
+        }else{
+            Serial.println("Right obstacle detected and nothing in Front! Move Straight.");
+        }
+    }
+    if(left_DistanceCm > 0 && left_DistanceCm < 20) {
+        stopAll();
+        delay(1000);
+        if(front_DistanceCm < 30){
+            Serial.println("Left obstacle detected and Front! Pivoting Right.");
+            pivotTurn(RIGHT, 200);
+        }else{
+            Serial.println("Left obstacle detected and nothing in Front! Stay Straight.");
+        }
+    }
 
+    stepForward(180, 1000);
     delay(1000);
-
 }
 
 
