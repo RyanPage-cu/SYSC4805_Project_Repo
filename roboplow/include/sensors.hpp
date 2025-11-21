@@ -57,4 +57,8 @@ extern const int IR_SENSOR_FL;    // Digital input from VMA330 OUT pin
 void ir_init(); // initialize IR sensors
 bool ir_obstacleDetected(int IR_SENSOR_PIN);       // returns true if obstacle detected, prints status
 
+// --- Magnetometer (LIS3MDL) ---
+void magnetometer_init(); // initialize magnetometer
+float read_heading();     // read heading in degrees
+
 #endif // SENSORS_HPP
