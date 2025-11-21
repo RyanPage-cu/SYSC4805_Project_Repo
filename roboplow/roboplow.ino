@@ -1,6 +1,8 @@
 #include "include/sensors.hpp"
 #include <watchdog.h>
 
+// ...existing code...
+
 /************************************************************
  * Watchdog requirement
  ************************************************************/
@@ -31,6 +33,9 @@ void setup() {
 
     // --- Initialize IR Obstacle Detection Sensors ---
     ir_init();
+
+    // --- Initialize Magnetometer ---
+    magnetometer_init();
 
 }
 
@@ -77,6 +82,12 @@ void loop() {
     Serial.println(obstacleFrontLeft ? "Yes" : "No");
     Serial.print("IR Front Right Obstacle: ");
     Serial.println(obstacleFrontRight ? "Yes" : "No");
+
+    /***** Read Magnetometer Heading *****/
+    float heading = read_heading();
+    Serial.print("Magnetometer Heading: ");
+    Serial.print(heading);
+    Serial.println(" deg");
 
     /*
     if(front_DistanceCm > 0 && front_DistanceCm < 30) {
