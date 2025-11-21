@@ -91,8 +91,8 @@ void loop() {
           Serial.println("Pivoting Right");
           pivotTurn(RIGHT, 150);
         } else {
-          Serial.println("Can't pivot right.");  // try to check if you can
-                                                 // rotate the robot 180 deg
+          Serial.println("Can't pivot right. Rotating the robot 180 deg.");
+          rotate180(150);
         }
       } else {
         // There's space on the right side, but obstacle on the front-right IR
@@ -105,8 +105,8 @@ void loop() {
           Serial.println("Pivoting Left");
           pivotTurn(LEFT, 150);
         } else {
-          Serial.println("Can't pivot left.");  // try to check if you can
-                                                // rotate the robot 180 deg
+          Serial.println("Can't pivot left. Rotating the robot 180 deg.");
+          rotate180(150);
         }
       } else {
         // There's space on the left side, but obstacle on the front-left IR
