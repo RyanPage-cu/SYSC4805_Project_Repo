@@ -91,7 +91,11 @@ void loop() {
           Serial.println("Pivoting Right");
           pivotTurn(RIGHT, 150);
         } else {
-          Serial.println("Can't pivot right. Rotating the robot 180 deg.");
+          Serial.println(
+              "Can't pivot right. Moving back then rotating the robot 180 "
+              "deg.");
+          stepBackward(speed);
+          Serial.println("Rotating the robot 180 deg.");
           rotate180(150);
         }
       } else {
@@ -105,7 +109,10 @@ void loop() {
           Serial.println("Pivoting Left");
           pivotTurn(LEFT, 150);
         } else {
-          Serial.println("Can't pivot left. Rotating the robot 180 deg.");
+          Serial.println(
+              "Can't pivot left. Moving back then rotating the robot 180 deg.");
+          stepBackward(speed);
+          Serial.println("Rotating the robot 180 deg.");
           rotate180(150);
         }
       } else {
