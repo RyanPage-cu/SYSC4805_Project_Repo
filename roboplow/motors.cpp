@@ -1,4 +1,3 @@
-// Motor control module implementation
 #include "include/sensors.hpp"
 #include "Arduino.h"
 
@@ -10,9 +9,15 @@ const int motor3_dir = 49;
 const int motor3_pwm = 48;
 const int motor4_dir = 47;
 const int motor4_pwm = 46;
-
 const bool RIGHT = true;
 const bool LEFT = false;
+
+void motors_init() {
+    pinMode(motor1_dir, OUTPUT);
+    pinMode(motor2_dir, OUTPUT);
+    pinMode(motor3_dir, OUTPUT);
+    pinMode(motor4_dir, OUTPUT);    
+}
 
 void setMotor(int dirPin, int pwmPin, bool forward, int speed) {
 	digitalWrite(dirPin, forward ? HIGH : LOW);

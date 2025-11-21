@@ -5,6 +5,11 @@
 const int IR_SENSOR_FR = 40;    // Digital input from VMA330 OUT pin
 const int IR_SENSOR_FL = 41;    // Digital input from VMA330 OUT pin
 
+void ir_init() {
+    pinMode(IR_SENSOR_FL, INPUT);
+    pinMode(IR_SENSOR_FR, INPUT);
+}
+
 // IR sensor behavior:
 // HIGH = No Obstacle
 // LOW  = Obstacle Detected

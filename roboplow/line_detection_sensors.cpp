@@ -1,4 +1,3 @@
-// Line follower sensor module implementation
 #include "include/sensors.hpp"
 #include "Arduino.h"
 
@@ -12,6 +11,16 @@ const int LFS_M2 = A4;   // Middle sensor
 const int LFS_L2 = A5;   // Right sensor
 
 const int LINE_THRESHOLD = 900;
+
+void line_detection_init() {
+    pinMode(LFS_L1, INPUT);
+    pinMode(LFS_M1, INPUT);
+    pinMode(LFS_R1, INPUT);
+
+    pinMode(LFS_L2, INPUT);
+    pinMode(LFS_M2, INPUT);
+    pinMode(LFS_R2, INPUT);
+}
 
 void readLineSensors(int &leftState1, int &middleState1, int &rightState1, int &leftState2, int &middleState2, int &rightState2) {
 	int leftVal1 = analogRead(LFS_L1);

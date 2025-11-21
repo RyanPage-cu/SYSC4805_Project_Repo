@@ -16,25 +16,13 @@ void setup() {
     Serial.println("Robot Initializing...");
 
     /***** Motor Pins *****/
-    pinMode(motor1_dir, OUTPUT);
-    pinMode(motor2_dir, OUTPUT);
-    pinMode(motor3_dir, OUTPUT);
-    pinMode(motor4_dir, OUTPUT);
+    motors_init();
 
     /***** Ultrasonic Sensor Pins *****/
-    pinMode(TRIG_PIN0, OUTPUT);
-    pinMode(ECHO_PIN0, INPUT);
-    pinMode(TRIG_PIN1, OUTPUT);
-    pinMode(ECHO_PIN1, INPUT);
+    ultrasonic_init();
 
     /***** Line Follower Sensor Pins *****/
-    pinMode(LFS_L1, INPUT);
-    pinMode(LFS_M1, INPUT);
-    pinMode(LFS_R1, INPUT);
-
-    pinMode(LFS_L2, INPUT);
-    pinMode(LFS_M2, INPUT);
-    pinMode(LFS_R2, INPUT);
+    line_detection_init();
 
     // --- Initialize VL53L1X Time-of-Flight sensor ---
     if (!tof_init()) {
@@ -42,9 +30,7 @@ void setup() {
     }
 
     // --- Initialize IR Obstacle Detection Sensors ---
-    pinMode(IR_SENSOR_FL, INPUT);
-    pinMode(IR_SENSOR_FR, INPUT);
-    Serial.println("Both IR sensors initialized on pin 40 and 41.");
+    ir_init();
 
 }
 

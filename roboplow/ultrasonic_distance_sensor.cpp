@@ -10,6 +10,13 @@ const int ECHO_PIN0 = 7;   // Echo pin
 const int TRIG_PIN1 = 42;   // Trigger pin
 const int ECHO_PIN1 = 43;   // Echo pin
 
+void ultrasonic_init() {
+    pinMode(TRIG_PIN0, OUTPUT);
+    pinMode(ECHO_PIN0, INPUT);
+    pinMode(TRIG_PIN1, OUTPUT);
+    pinMode(ECHO_PIN1, INPUT);
+}
+
 /**************************************************************
  * Read a single LEFT ultrasonic distance value (cm) 
  **************************************************************/

@@ -11,8 +11,7 @@ static VL53L1X tofSensor1;   // uses Wire1 (SDA1/SCL1)
 // ------------------------------------------------------------
 // Initialize both VL53L1X sensors
 // ------------------------------------------------------------
-bool tof_init() 
-{
+bool tof_init() {
     // Init first I2C bus
     Wire.begin();
     Wire.setClock(400000);
@@ -22,8 +21,8 @@ bool tof_init()
     Wire1.setClock(400000);
 
     // Tell each sensor which bus to use
-    tofSensor0.setBus(&Wire);
-    tofSensor1.setBus(&Wire1);
+    tofSensor0.setBus(&Wire); // (SDA/SCL) Pins 21/22 on Arduino Due
+    tofSensor1.setBus(&Wire1); // (SDA1/SCL1) Pins SDA1/SCL1 on Arduino Due
 
     tofSensor0.setTimeout(500);
     tofSensor1.setTimeout(500);
@@ -49,9 +48,9 @@ bool tof_init()
 }
 
 // ------------------------------------------------------------
-// Read distance from Sensor 0 (SDA/SCL)
+// Read distance from Sensor 
 // ------------------------------------------------------------
-float tof_readDistance()
+float tof_readDistance() // gets the average value from both sensors in cm
 {
     uint16_t mm_0 = tofSensor0.readRangeSingleMillimeters();
     if (tofSensor0.timeoutOccurred()) return -1.0f;
