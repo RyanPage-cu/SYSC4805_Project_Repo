@@ -1,6 +1,6 @@
 // Ultrasonic sensor module implementation
 
-#include "include/sensors.hpp"
+#include "include/sensor_manager.hpp"
 #include "Arduino.h"
 
 //Left Sensor

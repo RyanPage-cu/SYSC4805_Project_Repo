@@ -1,7 +1,7 @@
 #include <Wire.h>
 #include <LIS3MDL.h>
 #include "Arduino.h"
-#include "include/sensors.hpp"
+#include "include/sensor_manager.hpp"
 
 // Magnetometer globals
 static LIS3MDL mag;

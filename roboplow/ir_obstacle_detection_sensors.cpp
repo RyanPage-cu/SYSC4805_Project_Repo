@@ -1,4 +1,4 @@
-#include "include/sensors.hpp"
+#include "include/sensor_manager.hpp"
 #include "Arduino.h"
 
 // --- IR Obstacle Detection Sensor Pin ---
@@ -16,7 +16,6 @@ void ir_init() {
 
 bool ir_obstacleDetected(int IR_SENSOR_PIN) {
     int reading = digitalRead(IR_SENSOR_PIN);
-    
     if (reading == LOW) {
         Serial.println("IR Sensor: Obstacle Detected (reading = 0)");
         return true;

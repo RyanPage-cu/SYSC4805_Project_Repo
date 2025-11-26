@@ -1,7 +1,7 @@
 // Time of Flight sensor module — Two Sensors (Single Shot Mode)
 #include <Wire.h>
 #include <VL53L1X.h>
-#include "include/sensors.hpp"
+#include "include/sensor_manager.hpp"
 #include "Arduino.h"
 
 // Create two separate sensor objects
