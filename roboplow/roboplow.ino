@@ -12,7 +12,7 @@ void watchdogSetup(void) {}
  * Arduino Setup
  ************************************************************/
 void setup() {
-    watchdogEnable(4000);
+    watchdogEnable(16000);
 
     Serial.begin(115200);
     Serial.println("Robot Initializing...");
@@ -45,114 +45,231 @@ void setup() {
 void loop() {
     watchdogReset();
 
-    /***** Read Ultrasonic Distance Value *****/
-    float right_DistanceCm = ultrasonic_singleRead_Right();
-    Serial.print("Ultrasonic Right: ");
-    Serial.println(right_DistanceCm);
-    float left_DistanceCm = ultrasonic_singleRead_Left();
-    Serial.print("Ultrasonic Left: ");
-    Serial.println(left_DistanceCm);
+    // --- FSM State Definitions ---
+    enum RoboState {
+        INITIAL_STARTUP = 0,
+        VERIFY_LOCATION,
+        PRE_MOVEMENT_CHECK,
+        MOVEMENT,
+        ODDM,
+        LDDM,
+        SAFE_SHUTDOWN
+    };
 
-    /***** Read ToF Distance Value *****/
-    float front_DistanceCm = tof_readDistance();
-    Serial.print("ToF: ");
-        Serial.print(front_DistanceCm);
-        Serial.println(" cm");
+    static RoboState currentState = MOVEMENT;
 
-    /***** Read Line Sensors *****/
-    int FL, FM, FR, BL, BM, BR;
-    readLineSensors(FL, FM, FR, BL, BM, BR);
-    Serial.print("Front Line Sensors 1 - L:");
-    Serial.print(FL);   
-    Serial.print(" M:");
-    Serial.print(FM);
-    Serial.print(" R:");
-    Serial.println(FR);
-    Serial.print("Back Line Sensors 2 - L:");
-    Serial.print(BL);
-    Serial.print(" M:");
-    Serial.print(BM);
-    Serial.print(" R:");
-    Serial.println(BR);
-
-    /***** Read IR Obstacle Detection Sensors *****/
-    bool obstacleFrontLeft = ir_obstacleDetected(IR_SENSOR_FL);
-    bool obstacleFrontRight = ir_obstacleDetected(IR_SENSOR_FR);
-    Serial.print("IR Front Left Obstacle: ");
-    Serial.println(obstacleFrontLeft ? "Yes" : "No");
-    Serial.print("IR Front Right Obstacle: ");
-    Serial.println(obstacleFrontRight ? "Yes" : "No");
-
-    /***** Read Magnetometer Heading *****/
-    float heading = read_heading();
-    Serial.print("Magnetometer Heading: ");
-    Serial.print(heading);
-    Serial.println(" deg");
-
-    /*
-    if(front_DistanceCm > 0 && front_DistanceCm < 30) {
-        Serial.println("Obstacle detected! Stopping.");
-        stopAll();
-        delay(1000);
-        if(right_DistanceCm > left_DistanceCm) {
-            Serial.println("Pivoting Right");
-            pivotTurn(RIGHT, 150);
-        } else {
-            Serial.println("Pivoting Left");
-            pivotTurn(LEFT, 150);
-        }
-    }
-
-    if(right_DistanceCm > 0 && right_DistanceCm < 20) {
-        stopAll();
-        delay(1000);
-        if(front_DistanceCm < 30){
-            Serial.println("Right obstacle detected and Front! Pivoting Left.");
-            pivotTurn(LEFT, 150);
-        }else{
-            Serial.println("Right obstacle detected and nothing in Front! Move Straight.");
-        }
-    }
-    if(left_DistanceCm > 0 && left_DistanceCm < 20) {
-        stopAll();
-        delay(1000);
-        if(front_DistanceCm < 30){
-            Serial.println("Left obstacle detected and Front! Pivoting Right.");
-            pivotTurn(RIGHT, 150);
-        }else{
-            Serial.println("Left obstacle detected and nothing in Front! Stay Straight.");
-        }
-    }
-
-    if(FL == 0 || FM == 0 || FR == 0){
-        Serial.println("Line detected on Front Sensors! Stopping.");
-        stopAll();
-        if(FL == 0 && FR == 1 && FM == 1 || (FL == 0 && FM == 0 && FR == 1)){
-            Serial.println("Left Front Sensor on Line! Pivoting Right.");
-            stepForward(-180, 500);
-            delay(1000);
-            pivotTurn(RIGHT, 150);
-        }else if(FR == 0 && FL == 1 && FM == 1 || (FR == 0 && FM == 0 && FL == 1)){
-            Serial.println("Right Front Sensor on Line! Pivoting Left.");
-            stepForward(-180, 500);
-            pivotTurn(LEFT, 150);
-        }else{
-            Serial.println("Middle Front Sensor on Line! Reversing.");
-            stepForward(-180, 1000);
-            if(right_DistanceCm > left_DistanceCm) {
-                Serial.println("Pivoting Right");
-                pivotTurn(RIGHT, 150);
-            } else {
-                Serial.println("Pivoting Left");
-                pivotTurn(LEFT, 150);
+    static unsigned long startupTime = 0;
+    switch (currentState) {
+        case INITIAL_STARTUP:
+            // Initial Start-Up: remain stationary, allow sensors to stabilize
+            if (startupTime == 0) {
+                startupTime = millis();
+                stopAll(); // Ensure motors are stopped
+                Serial.println("FSM: Initial Start-Up. Stabilizing...");
             }
-     }
-        delay(1000);
-    }
+            if (millis() - startupTime >= 5000) {
+                Serial.println("FSM: Startup complete. Transitioning to Verify Location.");
+                currentState = VERIFY_LOCATION;
+                startupTime = 0; // Reset for future use
+            }
+            break;
+        case VERIFY_LOCATION: {
+            // Read line sensors
+            int FL, FM, FR, BL, BM, BR;
+            readLineSensors(FL, FM, FR, BL, BM, BR);
 
-    stepForward(180, 1000);
-    */
-    delay(1000);
+            // Read compass (magnetometer)
+            float heading = read_heading();
+            static float initialHeading = -1;
+
+            // Determine starting corner (example logic, adjust as needed)
+            bool inCorner = (FL == 0 && BL == 0) || (FR == 0 && BR == 0);
+            if (inCorner) {
+                Serial.println("FSM: Robot is in a valid starting corner.");
+                if (initialHeading < 0) {
+                    initialHeading = heading;
+                    Serial.print("FSM: Initial heading set to: ");
+                    Serial.println(initialHeading);
+                }
+                // Orientation is always valid at startup; future turns will use initialHeading as reference
+                currentState = PRE_MOVEMENT_CHECK;
+            } else {
+                Serial.println("FSM: Robot not in a valid corner. Waiting...");
+                // Remain in this state until placed correctly
+            }
+            break;
+        }
+        case PRE_MOVEMENT_CHECK: {
+            // Read distance sensors
+            float front_DistanceCm = tof_readDistance();
+            float right_DistanceCm = ultrasonic_singleRead_Right();
+            float left_DistanceCm = ultrasonic_singleRead_Left();
+
+            // Analog/IR sensors can be added here if needed
+            bool obstacleFrontLeft = ir_obstacleDetected(IR_SENSOR_FL);
+            bool obstacleFrontRight = ir_obstacleDetected(IR_SENSOR_FR);
+
+            // Check for obstacles (example thresholds, adjust as needed)
+            bool obstacleDetected = false;
+            if ((front_DistanceCm > 0 && front_DistanceCm < 30) ||
+                (right_DistanceCm > 0 && right_DistanceCm < 20) ||
+                (left_DistanceCm > 0 && left_DistanceCm < 20) ||
+                obstacleFrontLeft || obstacleFrontRight) {
+                obstacleDetected = true;
+            }
+
+            if (obstacleDetected) {
+                Serial.println("FSM: Obstacle detected in Pre-Movement Check. Transitioning to ODDM.");
+                currentState = ODDM;
+            } else {
+                Serial.println("FSM: No obstacle detected. Transitioning to Movement state.");
+                currentState = MOVEMENT;
+            }
+            break;
+        }
+        case MOVEMENT: {
+            // 1. Move forward about 36 cm
+            Serial.println("FSM: Movement state. Moving forward 36cm.");
+            stepForward(180, 1000); // Example: adjust parameters for ~36cm
+            stopAll();
+
+            // 2. Check distance sensors for obstacles
+            float front_DistanceCm = tof_readDistance();
+            float right_DistanceCm = ultrasonic_singleRead_Right();
+            float left_DistanceCm = ultrasonic_singleRead_Left();
+            bool obstacleFrontLeft = ir_obstacleDetected(IR_SENSOR_FL);
+            bool obstacleFrontRight = ir_obstacleDetected(IR_SENSOR_FR);
+
+            bool obstacleDetected = false;
+            if ((front_DistanceCm > 0 && front_DistanceCm < 30) ||
+                (right_DistanceCm > 0 && right_DistanceCm < 20) ||
+                (left_DistanceCm > 0 && left_DistanceCm < 20) ||
+                obstacleFrontLeft || obstacleFrontRight) {
+                obstacleDetected = true;
+            }
+            if (obstacleDetected) {
+                Serial.println("FSM: Obstacle detected during movement. Transitioning to ODDM.");
+                currentState = ODDM;
+                break;
+            }
+
+            // 3. Check line detection sensors
+            int FL, FM, FR, BL, BM, BR;
+            readLineSensors(FL, FM, FR, BL, BM, BR);
+            if (FL == 0 || FM == 0 || FR == 0 || BL == 0 || BM == 0 || BR == 0) {
+                Serial.println("FSM: Line detected. Transitioning to LDDM.");
+                currentState = LDDM;
+                break;
+            }
+
+            // No obstacle or line detected, repeat movement loop
+            break;
+        }
+        case ODDM: {
+            // Re-check sensors
+            float front_DistanceCm = tof_readDistance();
+            float right_DistanceCm = ultrasonic_singleRead_Right();
+            float left_DistanceCm = ultrasonic_singleRead_Left();
+            bool obstacleFrontLeft = ir_obstacleDetected(IR_SENSOR_FL);
+            bool obstacleFrontRight = ir_obstacleDetected(IR_SENSOR_FR);
+
+            // If no obstacle detected, return to Movement
+            bool obstacleDetected = false;
+            if ((front_DistanceCm > 0 && front_DistanceCm < 30) ||
+                (right_DistanceCm > 0 && right_DistanceCm < 20) ||
+                (left_DistanceCm > 0 && left_DistanceCm < 20) ||
+                obstacleFrontLeft || obstacleFrontRight) {
+                obstacleDetected = true;
+            }
+            if (!obstacleDetected) {
+                Serial.println("FSM: No obstacle detected. Returning to Movement state.");
+                currentState = MOVEMENT;
+                break;
+            }
+
+            Serial.println("FSM: Executing obstacle avoidance maneuver.");
+            // 1. Turn 90° right
+            pivotTurn(RIGHT, 150); // Example: adjust for 90°
+            delay(500);
+            // 2. Move forward until side sensor no longer detects obstacle
+            int forwardSteps = 0;
+            while ((right_DistanceCm > 0 && right_DistanceCm < 20) || obstacleFrontRight) {
+                stepForward(90, 500); // Example: adjust for step size
+                forwardSteps++;
+                right_DistanceCm = ultrasonic_singleRead_Right();
+                obstacleFrontRight = ir_obstacleDetected(IR_SENSOR_FR);
+            }
+            stopAll();
+            // 3. Turn 90° left
+            pivotTurn(LEFT, 150);
+            delay(500);
+            // 4. Move forward until opposite side sensor no longer detects obstacle
+            while ((left_DistanceCm > 0 && left_DistanceCm < 20) || obstacleFrontLeft) {
+                stepForward(90, 500);
+                left_DistanceCm = ultrasonic_singleRead_Left();
+                obstacleFrontLeft = ir_obstacleDetected(IR_SENSOR_FL);
+            }
+            stopAll();
+            // 5. Turn 90° left again
+            pivotTurn(LEFT, 150);
+            delay(500);
+            // 6. Move forward same number of steps to realign
+            for (int i = 0; i < forwardSteps; i++) {
+                stepForward(90, 500);
+            }
+            stopAll();
+            // 7. Turn 90° right to restore orientation
+            pivotTurn(RIGHT, 150);
+            delay(500);
+
+            Serial.println("FSM: Obstacle avoided. Returning to Movement state.");
+            currentState = MOVEMENT;
+            break;
+        }
+        case LDDM: {
+            // Stop all motion
+            stopAll();
+            Serial.println("FSM: Line detected. Executing boundary correction maneuver.");
+
+            // Read line sensors
+            int FL, FM, FR, BL, BM, BR;
+            readLineSensors(FL, FM, FR, BL, BM, BR);
+
+            // Example: front line sensor triggers correction
+            if (FL == 0 || FM == 0 || FR == 0) {
+                // 1. Back up slightly
+                stepForward(-90, 500);
+                delay(500);
+                // 2. Turn 90° left
+                pivotTurn(LEFT, 150);
+                delay(500);
+                // 3. Move forward a short distance
+                stepForward(90, 500);
+                delay(500);
+                // 4. Turn 90° left again
+                pivotTurn(LEFT, 150);
+                delay(500);
+                // 5. Back up slightly to center
+                stepForward(-90, 500);
+                delay(500);
+            }
+            // Add additional logic for back line sensors if needed
+
+            Serial.println("FSM: Boundary correction complete. Returning to Movement state.");
+            currentState = MOVEMENT;
+            break;
+        }
+        case SAFE_SHUTDOWN:
+            // Safe Shutdown: stop all motors and remain stationary
+            stopAll();
+            Serial.println("FSM: Critical fault detected. Entering Safe Shutdown state.");
+            // Optionally, power down components or signal error
+            // Remain in this state until manual reset
+            break;
+        default:
+            // Should not reach here
+            break;
+    }
 }
 
 

@@ -24,11 +24,18 @@ void setMotor(int dirPin, int pwmPin, bool forward, int speed) {
 	analogWrite(pwmPin, speed);
 }
 
-void moveStraight(int speed) {
+void moveForward(int speed) {
 	setMotor(motor1_dir, motor1_pwm, true, speed);
 	setMotor(motor2_dir, motor2_pwm, true, speed);
 	setMotor(motor3_dir, motor3_pwm, false, speed);
 	setMotor(motor4_dir, motor4_pwm, false, speed);
+}
+
+void moveBackward(int speed) {
+	setMotor(motor1_dir, motor1_pwm, false, speed);
+	setMotor(motor2_dir, motor2_pwm, false, speed);
+	setMotor(motor3_dir, motor3_pwm, true, speed);
+	setMotor(motor4_dir, motor4_pwm, true, speed);
 }
 
 void stopAll() {
@@ -87,7 +94,11 @@ void pivotTurn(bool direction, int speed) {
 }
 
 void stepForward(int speed, unsigned long duration_ms) {
-    moveStraight(speed);
+    if(speed < 0) {
+        moveBackward(-1 * speed);
+    } else {
+        moveForward(speed);
+    }
     delay(duration_ms);
     stopAll();
 }
