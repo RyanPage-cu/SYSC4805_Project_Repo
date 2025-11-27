@@ -91,24 +91,6 @@ void loop() {
                     initialHeading = heading;
                     Serial.print("FSM: Initial heading set to: ");
                     Serial.println(initialHeading);
-
-                    if(heading == 'N' && FL == 0 && BL == 0){
-                        startingSide = 'W';
-                    }else if(heading == 'N' && FR == 0 && BR == 0){
-                        startingSide = 'E';
-                    }else if(heading == 'S' && FR == 0 && BR == 0){
-                        startingSide = 'W';
-                    }else if(heading == 'S' && FL == 0 && BL == 0){
-                        startingSide = 'E';
-                    }else if(heading == 'E' && FR == 0 && BR == 0){
-                        startingSide = 'S';
-                    }else if(heading == 'E' && FL == 0 && BL == 0){
-                        startingSide = 'N';
-                    }else if(heading == 'W' && FR == 0 && BR == 0){
-                        startingSide = 'N';
-                    }else if(heading == 'W' && FL == 0 && BL == 0){
-                        startingSide = 'S';
-                    }
                 }
                 // Orientation is always valid at startup; future turns will use initialHeading as reference
                 currentState = PRE_MOVEMENT_CHECK;
@@ -141,6 +123,65 @@ void loop() {
             } else {
                 Serial.println("FSM: No obstacle detected. Transitioning to Movement state.");
                 currentState = MOVEMENT;
+            }
+
+            // Determine starting side based on line sensors and heading then moving off line
+            if(heading == 'N' && FL == 0 && BL == 0){
+                startingSide = 'W';
+                pivotTurn(RIGHT, 150);
+                stopAll();
+                stepForward(180, 250);
+                stopAll();
+                pivotTurn(LEFT, 150);
+            }else if(heading == 'N' && FR == 0 && BR == 0){
+                startingSide = 'E';
+                pivotTurn(LEFT, 150);
+                stopAll();
+                stepForward(180, 250);
+                stopAll();
+                pivotTurn(RIGHT, 150);
+            }else if(heading == 'S' && FR == 0 && BR == 0){
+                startingSide = 'W';
+                pivotTurn(LEFT, 150);
+                stopAll();
+                stepForward(180, 250);
+                stopAll();
+                pivotTurn(RIGHT, 150);
+            }else if(heading == 'S' && FL == 0 && BL == 0){
+                startingSide = 'E';
+                pivotTurn(RIGHT, 150);
+                stopAll();
+                stepForward(180, 250);
+                stopAll();
+                pivotTurn(LEFT, 150);
+            }else if(heading == 'E' && FR == 0 && BR == 0){
+                startingSide = 'S';
+                pivotTurn(LEFT, 150);
+                stopAll();
+                stepForward(180, 250);
+                stopAll();
+                pivotTurn(RIGHT, 150);
+            }else if(heading == 'E' && FL == 0 && BL == 0){
+                startingSide = 'N';
+                pivotTurn(RIGHT, 150);
+                stopAll();
+                stepForward(180, 250);
+                stopAll();
+                pivotTurn(LEFT, 150);
+            }else if(heading == 'W' && FR == 0 && BR == 0){
+                startingSide = 'N';
+                pivotTurn(LEFT, 150);
+                stopAll();
+                stepForward(180, 250);
+                stopAll();
+                pivotTurn(RIGHT, 150);
+            }else if(heading == 'W' && FL == 0 && BL == 0){
+                startingSide = 'S';
+                pivotTurn(RIGHT, 150);
+                stopAll();
+                stepForward(180, 250);
+                stopAll();
+                pivotTurn(LEFT, 150);
             }
             break;
         }
