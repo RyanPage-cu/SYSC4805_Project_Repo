@@ -129,59 +129,51 @@ void loop() {
             if(heading == 'N' && FL == 0 && BL == 0){
                 startingSide = 'W';
                 pivotTurn(RIGHT, 150);
-                stopAll();
-                stepForward(180, 250);
-                stopAll();
+                stepForward(180, 150);
                 pivotTurn(LEFT, 150);
+                stepForward(180, 150);
             }else if(heading == 'N' && FR == 0 && BR == 0){
                 startingSide = 'E';
                 pivotTurn(LEFT, 150);
-                stopAll();
-                stepForward(180, 250);
-                stopAll();
+                stepForward(180, 150);
                 pivotTurn(RIGHT, 150);
+                stepForward(180, 150);
             }else if(heading == 'S' && FR == 0 && BR == 0){
                 startingSide = 'W';
                 pivotTurn(LEFT, 150);
-                stopAll();
-                stepForward(180, 250);
-                stopAll();
+                stepForward(180, 150);
                 pivotTurn(RIGHT, 150);
+                stepForward(180, 150);
             }else if(heading == 'S' && FL == 0 && BL == 0){
                 startingSide = 'E';
                 pivotTurn(RIGHT, 150);
-                stopAll();
-                stepForward(180, 250);
-                stopAll();
+                stepForward(180, 150);
                 pivotTurn(LEFT, 150);
+                stepForward(180, 150);
             }else if(heading == 'E' && FR == 0 && BR == 0){
                 startingSide = 'S';
                 pivotTurn(LEFT, 150);
-                stopAll();
-                stepForward(180, 250);
-                stopAll();
+                stepForward(180, 150);
                 pivotTurn(RIGHT, 150);
+                stepForward(180, 150);
             }else if(heading == 'E' && FL == 0 && BL == 0){
                 startingSide = 'N';
                 pivotTurn(RIGHT, 150);
-                stopAll();
-                stepForward(180, 250);
-                stopAll();
+                stepForward(180, 150);
                 pivotTurn(LEFT, 150);
+                stepForward(180, 150);
             }else if(heading == 'W' && FR == 0 && BR == 0){
                 startingSide = 'N';
                 pivotTurn(LEFT, 150);
-                stopAll();
-                stepForward(180, 250);
-                stopAll();
+                stepForward(180, 150);
                 pivotTurn(RIGHT, 150);
+                stepForward(180, 150);
             }else if(heading == 'W' && FL == 0 && BL == 0){
                 startingSide = 'S';
                 pivotTurn(RIGHT, 150);
-                stopAll();
-                stepForward(180, 250);
-                stopAll();
+                stepForward(180, 150);
                 pivotTurn(LEFT, 150);
+                stepForward(180, 150);
             }
             break;
         }
@@ -241,49 +233,52 @@ void loop() {
                 break;
             }
 
-                       Serial.println("FSM: Executing obstacle avoidance maneuver.");
-            // 1. Turn 90° right
-            pivotTurn(RIGHT, 150); // Example: adjust for 90°
-            delay(500);
-            // 2. Move forward until side sensor no longer detects obstacle
-            int forwardSteps = 0;
-            Serial.println("LEFT DISTANCE CM");
-            left_DistanceCm = 10.0;
-            while ((left_DistanceCm > 0 && left_DistanceCm < 20) || obstacleFrontLeft) {
-                Serial.println("STILL IN VIEW L");
-                stepForward(180, 200); // Example: adjust for step size
-                forwardSteps++;
-                left_DistanceCm = ultrasonic_singleRead_Left();
-                obstacleFrontLeft = ir_obstacleDetected(IR_SENSOR_FL);
+            Serial.println("FSM: Executing obstacle avoidance maneuver.");
+
+            if(initialHeading == 'E' && startingSide == 'S'){
+                // 1. Turn 90° right
+                pivotTurn(RIGHT, 150); // Example: adjust for 90°
+                delay(500);
+                // 2. Move forward until side sensor no longer detects obstacle
+                int forwardSteps = 0;
+                Serial.println("LEFT DISTANCE CM");
+                left_DistanceCm = 10.0;
+                while ((left_DistanceCm > 0 && left_DistanceCm < 20) || obstacleFrontLeft) {
+                    Serial.println("STILL IN VIEW L");
+                    stepForward(180, 200); // Example: adjust for step size
+                    forwardSteps++;
+                    left_DistanceCm = ultrasonic_singleRead_Left();
+                    obstacleFrontLeft = ir_obstacleDetected(IR_SENSOR_FL);
+                }
+                stepForward(180, 1000);
+                stopAll();
+                // 3. Turn 90° left
+                pivotTurn(LEFT, 150);
+                stepForward(180, 800);
+                delay(500);
+                // 4. Move forward until opposite side sensor no longer detects obstacle
+                left_DistanceCm = 10.0;
+                while ((left_DistanceCm > 0 && left_DistanceCm < 20) || obstacleFrontLeft) {
+                    Serial.println("STILL IN VIEW L");
+                    stepForward(180, 200); // Example: adjust for step size
+                    forwardSteps++;
+                    left_DistanceCm = ultrasonic_singleRead_Left();
+                    obstacleFrontLeft = ir_obstacleDetected(IR_SENSOR_FL);
+                }
+                stepForward(180, 800);
+                stopAll();
+                // 5. Turn 90° left again
+                pivotTurn(LEFT, 150);
+                delay(500);
+                // 6. Move forward same number of steps to realign
+                for (int i = 0; i < forwardSteps; i++) {
+                    stepForward(180, 500);
+                }
+                stopAll();
+                // 7. Turn 90° right to restore orientation
+                pivotTurn(RIGHT, 150);
+                delay(500);
             }
-            stepForward(180, 1000);
-            stopAll();
-            // 3. Turn 90° left
-            pivotTurn(LEFT, 150);
-            stepForward(180, 800);
-            delay(500);
-            // 4. Move forward until opposite side sensor no longer detects obstacle
-            left_DistanceCm = 10.0;
-            while ((left_DistanceCm > 0 && left_DistanceCm < 20) || obstacleFrontLeft) {
-                Serial.println("STILL IN VIEW L");
-                stepForward(180, 200); // Example: adjust for step size
-                forwardSteps++;
-                left_DistanceCm = ultrasonic_singleRead_Left();
-                obstacleFrontLeft = ir_obstacleDetected(IR_SENSOR_FL);
-            }
-            stepForward(180, 800);
-            stopAll();
-            // 5. Turn 90° left again
-            pivotTurn(LEFT, 150);
-            delay(500);
-            // 6. Move forward same number of steps to realign
-            for (int i = 0; i < forwardSteps; i++) {
-                stepForward(180, 500);
-            }
-            stopAll();
-            // 7. Turn 90° right to restore orientation
-            pivotTurn(RIGHT, 150);
-            delay(500);
 
             Serial.println("FSM: Obstacle avoided. Returning to Movement state.");
             currentState = MOVEMENT;
