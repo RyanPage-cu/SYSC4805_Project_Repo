@@ -91,6 +91,7 @@ void pivotTurn(bool direction, int speed) {
         updatePivot();
         delay(5); // tiny sleep to avoid busy loop; keeps responsiveness
     }
+    stopAll();
 }
 
 void stepForward(int speed, unsigned long duration_ms) {
