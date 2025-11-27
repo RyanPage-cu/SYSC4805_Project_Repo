@@ -1,8 +1,9 @@
 #include "include/sensor_manager.hpp"
 #include <watchdog.h>
 
-
-// ...existing code...
+char heading;
+static char initialHeading;
+static char startingSide;
 
 /************************************************************
  * Watchdog requirement
@@ -86,27 +87,27 @@ void loop() {
             bool inCorner = (FL == HIGH && BL == HIGH) || (FR == HIGH && BR == HIGH);
             if (inCorner) {
                 Serial.println("FSM: Robot is in a valid starting corner.");
-                if (initialHeading < 0) {
+                if (initialHeading) {
                     initialHeading = heading;
                     Serial.print("FSM: Initial heading set to: ");
                     Serial.println(initialHeading);
 
                     if(heading == 'N' && FL == 0 && BL == 0){
-                        startingSide = "W";
+                        startingSide = 'W';
                     }else if(heading == 'N' && FR == 0 && BR == 0){
-                        startingSide = "E";
+                        startingSide = 'E';
                     }else if(heading == 'S' && FR == 0 && BR == 0){
-                        startingSide = "W";
+                        startingSide = 'W';
                     }else if(heading == 'S' && FL == 0 && BL == 0){
-                        startingSide = "E";
+                        startingSide = 'E';
                     }else if(heading == 'E' && FR == 0 && BR == 0){
-                        startingSide = "S";
+                        startingSide = 'S';
                     }else if(heading == 'E' && FL == 0 && BL == 0){
-                        startingSide = "N";
+                        startingSide = 'N';
                     }else if(heading == 'W' && FR == 0 && BR == 0){
-                        startingSide = "N";
+                        startingSide = 'N';
                     }else if(heading == 'W' && FL == 0 && BL == 0){
-                        startingSide = "S";
+                        startingSide = 'S';
                     }
                 }
                 // Orientation is always valid at startup; future turns will use initialHeading as reference
