@@ -1,6 +1,7 @@
 #include "include/sensor_manager.hpp"
 #include <watchdog.h>
 
+
 // ...existing code...
 
 /************************************************************
@@ -79,8 +80,7 @@ void loop() {
             readLineSensors(FL, FM, FR, BL, BM, BR);
 
             // Read compass (magnetometer)
-            float heading = read_heading();
-            static float initialHeading = -1;
+            heading = read_heading();
 
             // Determine starting corner (example logic, adjust as needed)
             bool inCorner = (FL == 0 && BL == 0) || (FR == 0 && BR == 0);
@@ -90,6 +90,24 @@ void loop() {
                     initialHeading = heading;
                     Serial.print("FSM: Initial heading set to: ");
                     Serial.println(initialHeading);
+
+                    if(heading == 'N' && FL == 0 && BL == 0){
+                        startingSide = "W";
+                    }else if(heading == 'N' && FR == 0 && BR == 0){
+                        startingSide = "E";
+                    }else if(heading == 'S' && FR == 0 && BR == 0){
+                        startingSide = "W";
+                    }else if(heading == 'S' && FL == 0 && BL == 0){
+                        startingSide = "E";
+                    }else if(heading == 'E' && FR == 0 && BR == 0){
+                        startingSide = "S";
+                    }else if(heading == 'E' && FL == 0 && BL == 0){
+                        startingSide = "N";
+                    }else if(heading == 'W' && FR == 0 && BR == 0){
+                        startingSide = "N";
+                    }else if(heading == 'W' && FL == 0 && BL == 0){
+                        startingSide = "S";
+                    }
                 }
                 // Orientation is always valid at startup; future turns will use initialHeading as reference
                 currentState = PRE_MOVEMENT_CHECK;
@@ -188,6 +206,9 @@ void loop() {
             }
 
             Serial.println("FSM: Executing obstacle avoidance maneuver.");
+            if(initialHeading == "E" && startingside == "S"){
+                
+           
             // 1. Turn 90° right
             pivotTurn(RIGHT, 150); // Example: adjust for 90°
             delay(500);

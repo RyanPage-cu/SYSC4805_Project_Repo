@@ -1,7 +1,7 @@
 // === sensor_manager.hpp ===
 // This header defines pin mappings, thresholds, and function prototypes for all sensors.
 // Each sensor module should include its own implementation file.
-
+#include stings.hpp
 #ifndef SENSOR_MANAGER_HPP
 #define SENSOR_MANAGER_HPP
 
@@ -58,7 +58,10 @@ void ir_init(); // initialize IR sensors
 bool ir_obstacleDetected(int IR_SENSOR_PIN);       // returns true if obstacle detected, prints status
 
 // --- Magnetometer (LIS3MDL) ---
+extern char heading;
+extern static char initialHeading;
+extern static char startingSide;
 void magnetometer_init(); // initialize magnetometer
-float read_heading();     // read heading in degrees
+char read_heading();     // read heading in degrees
 
 #endif
