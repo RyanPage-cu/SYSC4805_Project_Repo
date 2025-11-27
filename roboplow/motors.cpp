@@ -86,7 +86,7 @@ void stopPivot() {
 
 // Blocking wrapper that preserves existing behaviour (default 1500 ms)
 void pivotTurn(bool direction, int speed) {
-    startPivot(direction, speed, 1200);
+    startPivot(direction, speed, 1400);
     while (pivotActive) {
         updatePivot();
         delay(5); // tiny sleep to avoid busy loop; keeps responsiveness

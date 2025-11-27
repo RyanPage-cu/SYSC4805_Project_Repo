@@ -4,8 +4,8 @@
 #include "Arduino.h"
 
 //Left Sensor
-const int TRIG_PIN0 = 6;   // Trigger pin
-const int ECHO_PIN0 = 7;   // Echo pin
+const int TRIG_PIN0 = 32;   // Trigger pin
+const int ECHO_PIN0 = 33;   // Echo pin
 //RIght Sensor
 const int TRIG_PIN1 = 42;   // Trigger pin
 const int ECHO_PIN1 = 43;   // Echo pin
@@ -53,7 +53,6 @@ float ultrasonic_singleRead_Right() {
 
     // No echo received
     if (pulse == 0) {
-        Serial.print("no echo");
         return -1; 
     }
 

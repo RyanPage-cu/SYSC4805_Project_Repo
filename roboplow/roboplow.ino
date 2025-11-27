@@ -83,7 +83,7 @@ void loop() {
             heading = read_heading();
 
             // Determine starting corner (example logic, adjust as needed)
-            bool inCorner = (FL == 0 && BL == 0) || (FR == 0 && BR == 0);
+            bool inCorner = (FL == HIGH && BL == HIGH) || (FR == HIGH && BR == HIGH);
             if (inCorner) {
                 Serial.println("FSM: Robot is in a valid starting corner.");
                 if (initialHeading < 0) {
@@ -130,8 +130,6 @@ void loop() {
             // Check for obstacles (example thresholds, adjust as needed)
             bool obstacleDetected = false;
             if ((front_DistanceCm > 0 && front_DistanceCm < 30) ||
-                (right_DistanceCm > 0 && right_DistanceCm < 20) ||
-                (left_DistanceCm > 0 && left_DistanceCm < 20) ||
                 obstacleFrontLeft || obstacleFrontRight) {
                 obstacleDetected = true;
             }
@@ -160,8 +158,6 @@ void loop() {
 
             bool obstacleDetected = false;
             if ((front_DistanceCm > 0 && front_DistanceCm < 30) ||
-                (right_DistanceCm > 0 && right_DistanceCm < 20) ||
-                (left_DistanceCm > 0 && left_DistanceCm < 20) ||
                 obstacleFrontLeft || obstacleFrontRight) {
                 obstacleDetected = true;
             }
@@ -174,7 +170,7 @@ void loop() {
             // 3. Check line detection sensors
             int FL, FM, FR, BL, BM, BR;
             readLineSensors(FL, FM, FR, BL, BM, BR);
-            if (FL == 0 || FM == 0 || FR == 0 || BL == 0 || BM == 0 || BR == 0) {
+            if (FL == HIGH || FM == HIGH || FR == HIGH|| BL == HIGH || BM == HIGH || BR == HIGH) {
                 Serial.println("FSM: Line detected. Transitioning to LDDM.");
                 currentState = LDDM;
                 break;
@@ -194,8 +190,6 @@ void loop() {
             // If no obstacle detected, return to Movement
             bool obstacleDetected = false;
             if ((front_DistanceCm > 0 && front_DistanceCm < 30) ||
-                (right_DistanceCm > 0 && right_DistanceCm < 20) ||
-                (left_DistanceCm > 0 && left_DistanceCm < 20) ||
                 obstacleFrontLeft || obstacleFrontRight) {
                 obstacleDetected = true;
             }
@@ -205,38 +199,44 @@ void loop() {
                 break;
             }
 
-            Serial.println("FSM: Executing obstacle avoidance maneuver.");
-            if(initialHeading == "E" && startingside == "S"){
-                
-           
+                       Serial.println("FSM: Executing obstacle avoidance maneuver.");
             // 1. Turn 90° right
             pivotTurn(RIGHT, 150); // Example: adjust for 90°
             delay(500);
             // 2. Move forward until side sensor no longer detects obstacle
             int forwardSteps = 0;
-            while ((right_DistanceCm > 0 && right_DistanceCm < 20) || obstacleFrontRight) {
-                stepForward(90, 500); // Example: adjust for step size
-                forwardSteps++;
-                right_DistanceCm = ultrasonic_singleRead_Right();
-                obstacleFrontRight = ir_obstacleDetected(IR_SENSOR_FR);
-            }
-            stopAll();
-            // 3. Turn 90° left
-            pivotTurn(LEFT, 150);
-            delay(500);
-            // 4. Move forward until opposite side sensor no longer detects obstacle
+            Serial.println("LEFT DISTANCE CM");
+            left_DistanceCm = 10.0;
             while ((left_DistanceCm > 0 && left_DistanceCm < 20) || obstacleFrontLeft) {
-                stepForward(90, 500);
+                Serial.println("STILL IN VIEW L");
+                stepForward(180, 200); // Example: adjust for step size
+                forwardSteps++;
                 left_DistanceCm = ultrasonic_singleRead_Left();
                 obstacleFrontLeft = ir_obstacleDetected(IR_SENSOR_FL);
             }
+            stepForward(180, 1000);
+            stopAll();
+            // 3. Turn 90° left
+            pivotTurn(LEFT, 150);
+            stepForward(180, 800);
+            delay(500);
+            // 4. Move forward until opposite side sensor no longer detects obstacle
+            left_DistanceCm = 10.0;
+            while ((left_DistanceCm > 0 && left_DistanceCm < 20) || obstacleFrontLeft) {
+                Serial.println("STILL IN VIEW L");
+                stepForward(180, 200); // Example: adjust for step size
+                forwardSteps++;
+                left_DistanceCm = ultrasonic_singleRead_Left();
+                obstacleFrontLeft = ir_obstacleDetected(IR_SENSOR_FL);
+            }
+            stepForward(180, 800);
             stopAll();
             // 5. Turn 90° left again
             pivotTurn(LEFT, 150);
             delay(500);
             // 6. Move forward same number of steps to realign
             for (int i = 0; i < forwardSteps; i++) {
-                stepForward(90, 500);
+                stepForward(180, 500);
             }
             stopAll();
             // 7. Turn 90° right to restore orientation
@@ -257,21 +257,21 @@ void loop() {
             readLineSensors(FL, FM, FR, BL, BM, BR);
 
             // Example: front line sensor triggers correction
-            if (FL == 0 || FM == 0 || FR == 0) {
+             if (FL == HIGH || FM == HIGH || FR == HIGH) {
                 // 1. Back up slightly
-                stepForward(-90, 500);
+                stepForward(-180, 500);
                 delay(500);
                 // 2. Turn 90° left
                 pivotTurn(LEFT, 150);
                 delay(500);
                 // 3. Move forward a short distance
-                stepForward(90, 500);
+                stepForward(180, 500);
                 delay(500);
                 // 4. Turn 90° left again
                 pivotTurn(LEFT, 150);
                 delay(500);
                 // 5. Back up slightly to center
-                stepForward(-90, 500);
+                stepForward(-180, 500);
                 delay(500);
             }
             // Add additional logic for back line sensors if needed
