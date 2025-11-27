@@ -278,6 +278,307 @@ void loop() {
                 // 7. Turn 90° right to restore orientation
                 pivotTurn(RIGHT, 150);
                 delay(500);
+            }else if(initialHeading == 'E' && startingSide == 'N'){
+                // 1. Turn 90° left
+                pivotTurn(LEFT, 150); // Example: adjust for 90°
+                delay(500);
+                // 2. Move forward until side sensor no longer detects obstacle
+                int forwardSteps = 0;
+                Serial.println("RIGHT DISTANCE CM");
+                right_DistanceCm = 10.0;
+                while ((right_DistanceCm > 0 && right_DistanceCm < 20) || obstacleFrontRight) {
+                    Serial.println("STILL IN VIEW R");
+                    stepForward(180, 200); // Example: adjust for step size
+                    forwardSteps++;
+                    right_DistanceCm = ultrasonic_singleRead_Right();
+                    obstacleFrontRight = ir_obstacleDetected(IR_SENSOR_FR);
+                }
+                stepForward(180, 1000);
+                stopAll();
+                // 3. Turn 90° right
+                pivotTurn(RIGHT, 150);
+                stepForward(180, 800);
+                delay(500);
+                // 4. Move forward until opposite side sensor no longer detects obstacle
+                right_DistanceCm = 10.0;
+                while ((right_DistanceCm > 0 && right_DistanceCm < 20) || obstacleFrontRight) {
+                    Serial.println("STILL IN VIEW R");
+                    stepForward(180, 200); // Example: adjust for step size
+                    forwardSteps++;
+                    right_DistanceCm = ultrasonic_singleRead_Right();
+                    obstacleFrontRight = ir_obstacleDetected(IR_SENSOR_FR);
+                }
+                stepForward(180, 800);
+                stopAll();
+                // 5. Turn 90° right again
+                pivotTurn(RIGHT, 150);
+                delay(500);
+                // 6. Move forward same number of steps to realign
+                for (int i = 0; i < forwardSteps; i++) {
+                    stepForward(180, 500);
+                }
+                stopAll();
+                // 7. Turn 90° left to restore orientation
+                pivotTurn(LEFT, 150);
+                delay(500);
+            }else if(initialHeading == 'W' && startingSide == 'S'){
+                // 1. Turn 90° left
+                pivotTurn(LEFT, 150); // Example: adjust for 90°
+                delay(500);
+                // 2. Move forward until side sensor no longer detects obstacle
+                int forwardSteps = 0;
+                Serial.println("RIGHT DISTANCE CM");
+                right_DistanceCm = 10.0;
+                while ((right_DistanceCm > 0 && right_DistanceCm < 20) || obstacleFrontRight) {
+                    Serial.println("STILL IN VIEW R");
+                    stepForward(180, 200); // Example: adjust for step size
+                    forwardSteps++;
+                    right_DistanceCm = ultrasonic_singleRead_Right();
+                    obstacleFrontRight = ir_obstacleDetected(IR_SENSOR_FR);
+                }
+                stepForward(180, 1000);
+                stopAll();
+                // 3. Turn 90° right
+                pivotTurn(RIGHT, 150);
+                stepForward(180, 800);
+                delay(500);
+                // 4. Move forward until opposite side sensor no longer detects obstacle
+                right_DistanceCm = 10.0;
+                while ((right_DistanceCm > 0 && right_DistanceCm < 20) || obstacleFrontRight) {
+                    Serial.println("STILL IN VIEW R");
+                    stepForward(180, 200); // Example: adjust for step size
+                    forwardSteps++;
+                    right_DistanceCm = ultrasonic_singleRead_Right();
+                    obstacleFrontRight = ir_obstacleDetected(IR_SENSOR_FR);
+                }
+                stepForward(180, 800);
+                stopAll();
+                // 5. Turn 90° right again
+                pivotTurn(RIGHT, 150);
+                delay(500);
+                // 6. Move forward same number of steps to realign
+                for (int i = 0; i < forwardSteps; i++) {
+                    stepForward(180, 500);
+                }
+                stopAll();
+                // 7. Turn 90° left to restore orientation
+                pivotTurn(LEFT, 150);
+                delay(500);
+            }else if(initialHeading == 'W' && startingSide == 'N'){
+                // 1. Turn 90° right
+                pivotTurn(RIGHT, 150); // Example: adjust for 90°
+                delay(500);
+                // 2. Move forward until side sensor no longer detects obstacle
+                int forwardSteps = 0;
+                Serial.println("LEFT DISTANCE CM");
+                left_DistanceCm = 10.0;
+                while ((left_DistanceCm > 0 && left_DistanceCm < 20) || obstacleFrontLeft) {
+                    Serial.println("STILL IN VIEW L");
+                    stepForward(180, 200); // Example: adjust for step size
+                    forwardSteps++;
+                    left_DistanceCm = ultrasonic_singleRead_Left();
+                    obstacleFrontLeft = ir_obstacleDetected(IR_SENSOR_FL);
+                }
+                stepForward(180, 1000);
+                stopAll();
+                // 3. Turn 90° left
+                pivotTurn(LEFT, 150);
+                stepForward(180, 800);
+                delay(500);
+                // 4. Move forward until opposite side sensor no longer detects obstacle
+                left_DistanceCm = 10.0;
+                while ((left_DistanceCm > 0 && left_DistanceCm < 20) || obstacleFrontLeft) {
+                    Serial.println("STILL IN VIEW L");
+                    stepForward(180, 200); // Example: adjust for step size
+                    forwardSteps++;
+                    left_DistanceCm = ultrasonic_singleRead_Left();
+                    obstacleFrontLeft = ir_obstacleDetected(IR_SENSOR_FL);
+                }
+                stepForward(180, 800);
+                stopAll();
+                // 5. Turn 90° left again
+                pivotTurn(LEFT, 150);
+                delay(500);
+                // 6. Move forward same number of steps to realign
+                for (int i = 0; i < forwardSteps; i++) {
+                    stepForward(180, 500);
+                }
+                stopAll();
+                // 7. Turn 90° right to restore orientation
+                pivotTurn(RIGHT, 150);
+                delay(500);
+            }else if(initialHeading == 'N' && startingSide == 'E'){
+                // 1. Turn 90° right
+                pivotTurn(RIGHT, 150); // Example: adjust for 90°
+                delay(500);
+                // 2. Move forward until side sensor no longer detects obstacle
+                int forwardSteps = 0;
+                Serial.println("LEFT DISTANCE CM");
+                left_DistanceCm = 10.0;
+                while ((left_DistanceCm > 0 && left_DistanceCm < 20) || obstacleFrontLeft) {
+                    Serial.println("STILL IN VIEW L");
+                    stepForward(180, 200); // Example: adjust for step size
+                    forwardSteps++;
+                    left_DistanceCm = ultrasonic_singleRead_Left();
+                    obstacleFrontLeft = ir_obstacleDetected(IR_SENSOR_FL);
+                }
+                stepForward(180, 1000);
+                stopAll();
+                // 3. Turn 90° left
+                pivotTurn(LEFT, 150);
+                stepForward(180, 800);
+                delay(500);
+                // 4. Move forward until opposite side sensor no longer detects obstacle
+                left_DistanceCm = 10.0;
+                while ((left_DistanceCm > 0 && left_DistanceCm < 20) || obstacleFrontLeft) {
+                    Serial.println("STILL IN VIEW L");
+                    stepForward(180, 200); // Example: adjust for step size
+                    forwardSteps++;
+                    left_DistanceCm = ultrasonic_singleRead_Left();
+                    obstacleFrontLeft = ir_obstacleDetected(IR_SENSOR_FL);
+                }
+                stepForward(180, 800);
+                stopAll();
+                // 5. Turn 90° left again
+                pivotTurn(LEFT, 150);
+                delay(500);
+                // 6. Move forward same number of steps to realign
+                for (int i = 0; i < forwardSteps; i++) {
+                    stepForward(180, 500);
+                }
+                stopAll();
+                // 7. Turn 90° right to restore orientation
+                pivotTurn(RIGHT, 150);
+                delay(500);
+            }else if(initialHeading == 'N' && startingSide == 'W'){
+                // 1. Turn 90° left
+                pivotTurn(LEFT, 150); // Example: adjust for 90°
+                delay(500);
+                // 2. Move forward until side sensor no longer detects obstacle
+                int forwardSteps = 0;
+                Serial.println("RIGHT DISTANCE CM");
+                right_DistanceCm = 10.0;
+                while ((right_DistanceCm > 0 && right_DistanceCm < 20) || obstacleFrontRight) {
+                    Serial.println("STILL IN VIEW R");
+                    stepForward(180, 200); // Example: adjust for step size
+                    forwardSteps++;
+                    right_DistanceCm = ultrasonic_singleRead_Right();
+                    obstacleFrontRight = ir_obstacleDetected(IR_SENSOR_FR);
+                }
+                stepForward(180, 1000);
+                stopAll();
+                // 3. Turn 90° right
+                pivotTurn(RIGHT, 150);
+                stepForward(180, 800);
+                delay(500);
+                // 4. Move forward until opposite side sensor no longer detects obstacle
+                right_DistanceCm = 10.0;
+                while ((right_DistanceCm > 0 && right_DistanceCm < 20) || obstacleFrontRight) {
+                    Serial.println("STILL IN VIEW R");
+                    stepForward(180, 200); // Example: adjust for step size
+                    forwardSteps++;
+                    right_DistanceCm = ultrasonic_singleRead_Right();
+                    obstacleFrontRight = ir_obstacleDetected(IR_SENSOR_FR);
+                }
+                stepForward(180, 800);
+                stopAll();
+                // 5. Turn 90° right again
+                pivotTurn(RIGHT, 150);
+                delay(500);
+                // 6. Move forward same number of steps to realign
+                for (int i = 0; i < forwardSteps; i++) {
+                    stepForward(180, 500);
+                }
+                stopAll();
+                // 7. Turn 90° left to restore orientation
+                pivotTurn(LEFT, 150);
+                delay(500);
+            }else if(initialHeading == 'S' && startingSide == 'E'){
+                // 1. Turn 90° left
+                pivotTurn(LEFT, 150); // Example: adjust for 90°
+                delay(500);
+                // 2. Move forward until side sensor no longer detects obstacle
+                int forwardSteps = 0;
+                Serial.println("RIGHT DISTANCE CM");
+                right_DistanceCm = 10.0;
+                while ((right_DistanceCm > 0 && right_DistanceCm < 20) || obstacleFrontRight) {
+                    Serial.println("STILL IN VIEW R");
+                    stepForward(180, 200); // Example: adjust for step size
+                    forwardSteps++;
+                    right_DistanceCm = ultrasonic_singleRead_Right();
+                    obstacleFrontRight = ir_obstacleDetected(IR_SENSOR_FR);
+                }
+                stepForward(180, 1000);
+                stopAll();
+                // 3. Turn 90° right
+                pivotTurn(RIGHT, 150);
+                stepForward(180, 800);
+                delay(500);
+                // 4. Move forward until opposite side sensor no longer detects obstacle
+                right_DistanceCm = 10.0;
+                while ((right_DistanceCm > 0 && right_DistanceCm < 20) || obstacleFrontRight) {
+                    Serial.println("STILL IN VIEW R");
+                    stepForward(180, 200); // Example: adjust for step size
+                    forwardSteps++;
+                    right_DistanceCm = ultrasonic_singleRead_Right();
+                    obstacleFrontRight = ir_obstacleDetected(IR_SENSOR_FR);
+                }
+                stepForward(180, 800);
+                stopAll();
+                // 5. Turn 90° right again
+                pivotTurn(RIGHT, 150);
+                delay(500);
+                // 6. Move forward same number of steps to realign
+                for (int i = 0; i < forwardSteps; i++) {
+                    stepForward(180, 500);
+                }
+                stopAll();
+                // 7. Turn 90° left to restore orientation
+                pivotTurn(LEFT, 150);
+                delay(500);
+            }else if(initialHeading == 'S' && startingSide == 'W'){
+                // 1. Turn 90° right
+                pivotTurn(RIGHT, 150); // Example: adjust for 90°
+                delay(500);
+                // 2. Move forward until side sensor no longer detects obstacle
+                int forwardSteps = 0;
+                Serial.println("LEFT DISTANCE CM");
+                left_DistanceCm = 10.0;
+                while ((left_DistanceCm > 0 && left_DistanceCm < 20) || obstacleFrontLeft) {
+                    Serial.println("STILL IN VIEW L");
+                    stepForward(180, 200); // Example: adjust for step size
+                    forwardSteps++;
+                    left_DistanceCm = ultrasonic_singleRead_Left();
+                    obstacleFrontLeft = ir_obstacleDetected(IR_SENSOR_FL);
+                }
+                stepForward(180, 1000);
+                stopAll();
+                // 3. Turn 90° left
+                pivotTurn(LEFT, 150);
+                stepForward(180, 800);
+                delay(500);
+                // 4. Move forward until opposite side sensor no longer detects obstacle
+                left_DistanceCm = 10.0;
+                while ((left_DistanceCm > 0 && left_DistanceCm < 20) || obstacleFrontLeft) {
+                    Serial.println("STILL IN VIEW L");
+                    stepForward(180, 200); // Example: adjust for step size
+                    forwardSteps++;
+                    left_DistanceCm = ultrasonic_singleRead_Left();
+                    obstacleFrontLeft = ir_obstacleDetected(IR_SENSOR_FL);
+                }
+                stepForward(180, 800);
+                stopAll();
+                // 5. Turn 90° left again
+                pivotTurn(LEFT, 150);
+                delay(500);
+                // 6. Move forward same number of steps to realign
+                for (int i = 0; i < forwardSteps; i++) {
+                    stepForward(180, 500);
+                }
+                stopAll();
+                // 7. Turn 90° right to restore orientation
+                pivotTurn(RIGHT, 150);
+                delay(500);
             }
 
             Serial.println("FSM: Obstacle avoided. Returning to Movement state.");
