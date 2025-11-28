@@ -12,8 +12,8 @@ bool snakingDirection = RIGHT;
 void watchdogSetup(void) {}
 
 bool lineDetected(){
-    int FL, FM, FR, BL, BM, BR;
-    if (FL == HIGH || FM == HIGH || FR == HIGH|| BL == HIGH || BM == HIGH || BR == HIGH) {
+    int FL, FM, FR;
+    if (FL == HIGH || FM == HIGH || FR == HIGH) {
         Serial.println("FSM: Line detected. Transitioning to LDDM.");
         return true;
     }
@@ -68,7 +68,7 @@ void setup() {
     line_detection_init();
 
     // --- Initialize Magnetometer ---
-    magnetometer_init();
+    //magnetometer_init();
 
     // --- Initialize VL53L1X Time-of-Flight sensor ---
     if (!tof_init()) {
@@ -118,8 +118,8 @@ void loop() {
             break;
         case VERIFY_LOCATION: {
             // Read line sensors
-            int FL, FM, FR, BL, BM, BR;
-            readLineSensors(FL, FM, FR, BL, BM, BR);
+            int FL, FM, FR;
+            readLineSensors(FL, FM, FR);
 
             // Read compass (magnetometer)
             heading = read_heading();
@@ -222,9 +222,9 @@ void loop() {
             }
 
             // 3. Check line detection sensors
-            int FL, FM, FR, BL, BM, BR;
-            readLineSensors(FL, FM, FR, BL, BM, BR);
-            if (FL == HIGH || FM == HIGH || FR == HIGH|| BL == HIGH || BM == HIGH || BR == HIGH) {
+            int FL, FM, FR;
+            readLineSensors(FL, FM, FR);
+            if (FL == HIGH || FM == HIGH || FR == HIGH) {
                 Serial.println("FSM: Line detected. Transitioning to LDDM.");
                 currentState = LDDM;
                 break;
@@ -241,7 +241,7 @@ void loop() {
             bool obstacleFrontLeft = ir_obstacleDetected(IR_SENSOR_FL);
             bool obstacleFrontRight = ir_obstacleDetected(IR_SENSOR_FR);
 
-            int FL, FM, FR, BL, BM, BR;
+            int FL, FM, FR;
 
             // If no obstacle detected, return to Movement
             bool obstacleDetected = false;
@@ -346,13 +346,13 @@ void loop() {
             Serial.println("FSM: Line detected. Executing boundary correction maneuver.");
 
             // Read line sensors
-            int FL, FM, FR, BL, BM, BR;
+            int FL, FM, FR;
             float front_DistanceCm;
             bool obstacleFrontLeft;
             bool obstacleFrontRight;
 
 
-            readLineSensors(FL, FM, FR, BL, BM, BR);
+            readLineSensors(FL, FM, FR);
 
             // Example: front line sensor triggers correction
             if (FL == HIGH || FM == HIGH || FR == HIGH) {
@@ -360,7 +360,7 @@ void loop() {
                 stepForward(-180, 500);
                 delay(500);
                 // 2. Turn 90° left
-                pivotTurn(snakingDirection, 1400);
+                pivotTurn(snakingDirection, 1000);
                 delay(500);
                 // 3. Move forward a short distance
                 front_DistanceCm = tof_readDistance();
