@@ -11,10 +11,19 @@ bool snakingDirection = RIGHT;
  ************************************************************/
 void watchdogSetup(void) {}
 
+bool lineDetected(){
+    int FL, FM, FR, BL, BM, BR;
+    if (FL == HIGH || FM == HIGH || FR == HIGH|| BL == HIGH || BM == HIGH || BR == HIGH) {
+        Serial.println("FSM: Line detected. Transitioning to LDDM.");
+        return true;
+    }
+    return false;
+}
+
 void turn(bool direction) {
     int offset = direction ? 90 : -90;
     float initial = read_heading();
-    pivotTurn(direction, 1400);
+    pivotTurn(direction, 1000);
     delay(200);
     float head = read_heading();
     float current_offset = (int(initial + offset) % 360) - head;
@@ -191,7 +200,7 @@ void loop() {
         case MOVEMENT: {
             // 1. Move forward about 36 cm
             Serial.println("FSM: Movement state. Moving forward 36cm.");
-            stepForward(180, 500); // Example: adjust parameters for ~36cm
+            stepForward(180, 200); // Example: adjust parameters for ~36cm
             stopAll();
 
             // 2. Check distance sensors for obstacles
@@ -232,6 +241,8 @@ void loop() {
             bool obstacleFrontLeft = ir_obstacleDetected(IR_SENSOR_FL);
             bool obstacleFrontRight = ir_obstacleDetected(IR_SENSOR_FR);
 
+            int FL, FM, FR, BL, BM, BR;
+
             // If no obstacle detected, return to Movement
             bool obstacleDetected = false;
             if ((front_DistanceCm > 0 && front_DistanceCm < 30) ||
@@ -248,7 +259,7 @@ void loop() {
 
             stepForward(180, 200);
             // 1. Turn 90° right
-            pivotTurn(RIGHT, 1400);
+            pivotTurn(RIGHT, 1000);
             delay(500);
             // 2. Move forward until side sensor no longer detects obstacle
             int forwardSteps = 0;
@@ -260,12 +271,27 @@ void loop() {
                 forwardSteps++;
                 left_DistanceCm = ultrasonic_singleRead_Left();
                 obstacleFrontLeft = ir_obstacleDetected(IR_SENSOR_FL);
+                if (lineDetected()){
+                    currentState = LDDM;
+                    break;
+                }
+                delay(500);
             }
             stepForward(180, 1000);
             stopAll();
             // 3. Turn 90° left
-            pivotTurn(LEFT, 1400);
-            stepForward(180, 600);
+            pivotTurn(LEFT, 1000);
+            stepForward(180, 400);
+            delay(500);
+            if (lineDetected()){
+                currentState = LDDM;
+                break;
+            }
+            stepForward(180, 400);
+            if (lineDetected()){
+                currentState = LDDM;
+                break;
+            }
             delay(500);
             // 4. Move forward until opposite side sensor no longer detects obstacle
             left_DistanceCm = 10.0;
@@ -274,20 +300,40 @@ void loop() {
                 stepForward(180, 400); // Example: adjust for step size
                 left_DistanceCm = ultrasonic_singleRead_Left();
                 obstacleFrontLeft = ir_obstacleDetected(IR_SENSOR_FL);
+                if (lineDetected()){
+                    currentState = LDDM;
+                    break;
+                }
+                delay(500);
             }
             stepForward(180, 600);
             stopAll();
             // 5. Turn 90° left again
-            pivotTurn(LEFT, 1400);
+            pivotTurn(LEFT, 1000);
             delay(500);
             // 6. Move forward same number of steps to realign
             for (int i = 0; i < forwardSteps; i++) {
                 stepForward(180, 500);
+                if (lineDetected()){
+                    currentState = LDDM;
+                    break;
+                }
+                delay(500);
             }
-            stepForward(180, 1000);
+            stepForward(180, 500);
+            if (lineDetected()){
+                currentState = LDDM;
+                break;
+            }
+            delay(500);
+            stepForward(180, 500);
+            if (lineDetected()){
+                currentState = LDDM;
+                break;
+            }
             stopAll();
             // 7. Turn 90° right to restore orientation
-            pivotTurn(LEFT, 1400);
+            pivotTurn(RIGHT, 1000);
             delay(500);
             
             Serial.println("FSM: Obstacle avoided. Returning to Movement state.");
@@ -328,7 +374,7 @@ void loop() {
                 }
                 delay(500);
                 // 4. Turn 90° left again
-                pivotTurn(snakingDirection, 1400);
+                pivotTurn(snakingDirection, 1000);
                 delay(500);
                 // 5. Back up slightly to center
                 stepForward(-180, 500);
@@ -340,7 +386,9 @@ void loop() {
                 pivotTurn(snakingDirection, 400);
                 delay(200);
                 pivotTurn(!snakingDirection, 400);
-            } 
+            } else {
+                pivotTurn(RIGHT, 2000);
+            }
             // Add additional logic for back line sensors if needed
 
             Serial.println("FSM: Boundary correction complete. Returning to Movement state.");

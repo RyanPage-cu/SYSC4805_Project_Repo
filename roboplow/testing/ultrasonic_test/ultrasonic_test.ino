@@ -1,5 +1,5 @@
-const int TRIG_PIN = 43;   // Trigger pin
-const int ECHO_PIN = A6;   // Echo pin
+const int TRIG_PIN = 32;   // Trigger pin
+const int ECHO_PIN = 33;   // Echo pin
 float distanceCm;
 
 void ultrasonic() {
