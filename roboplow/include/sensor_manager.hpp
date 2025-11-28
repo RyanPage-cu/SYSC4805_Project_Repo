@@ -22,7 +22,7 @@ void motors_init(); // Implementation in motors.cpp
 void setMotor(int dirPin, int pwmPin, bool forward, int speed); // Implementation in motors.cpp
 void moveStraight(int speed = 180); // Implementation in motors.cpp
 void stopAll(); // Implementation in motors.cpp
-void pivotTurn(bool direction, int speed = 180); // Implementation in motors.cpp
+void pivotTurn(bool direction, int duration);
 void stepForward(int speed, unsigned long duration_ms); // Implementation in motors.cpp
 
 // --- Ultrasonic Sensor (to be moved to ultrasonic.cpp) ---
@@ -60,6 +60,6 @@ bool ir_obstacleDetected(int IR_SENSOR_PIN);       // returns true if obstacle d
 // --- Magnetometer (LIS3MDL) ---
 
 void magnetometer_init(); // initialize magnetometer
-char read_heading();     // read heading in degrees
+float read_heading();     // read heading in degrees
 
 #endif

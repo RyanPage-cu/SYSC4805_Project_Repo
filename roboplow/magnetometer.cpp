@@ -32,7 +32,7 @@ void magnetometer_init() {
     }
 }
 
-char read_heading() {
+float read_heading() {
     mag.read();
     mag_min.x = min(mag_min.x, mag.m.x);
     mag_min.y = min(mag_min.y, mag.m.y);
@@ -46,7 +46,8 @@ char read_heading() {
     float heading = atan2(current.y, current.x);
     heading *= 180.0 / PI;
     if (heading < 0) heading += 360;
-    
+    return heading;
+    /*
     if (heading >= 315 || heading < 45) {
         return 'N';
     } else if (heading >= 45 && heading < 135) {
@@ -56,4 +57,5 @@ char read_heading() {
     } else {
         return 'W';
     }
+    */
 }
