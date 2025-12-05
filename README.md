@@ -154,9 +154,3 @@ File → Open → roboplow/roboplow.ino
 Use the programming port.
 
 ---
-
-# 📫 Contact
-
-**Ryan Page**  
-101268082  
-RyanPage@cmail.carleton.ca
