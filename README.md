@@ -5,9 +5,9 @@
 | Name | Student Number | Email |
 |------|----------------|-------|
 | Ryan Page | 101268082 | RyanPage@cmail.carleton.ca |
-| Neeraj Suchindrum | 101199014 |  |
-| Neel Patel | 101226947 |  |
-| Adeyehun Folahanmi | 101237546 |  |
+| Neeraj Suchindrum | 101199014 | neerajsuchindrum@cmail.carleton.ca |
+| Neel Patel | 101226947 | neelpatel4@cmail.carleton.ca |
+| Adeyehun Folahanmi | 101237546 | folahanmiadeyehun@cmail.carleton.ca |
 
 ---
 
